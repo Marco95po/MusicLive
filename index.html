@@ -850,119 +850,6 @@
     .confirmation-btn:hover {
       transform: scale(1.05);
     }
-
-    /* Ad Containers */
-    .ad-container {
-      width: 100%;
-      margin: 20px 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100px;
-      background-color: rgba(0, 0, 0, 0.2);
-      border-radius: 8px;
-      overflow: hidden;
-    }
-
-    .ad-banner {
-      width: 100%;
-      max-width: 728px;
-      height: 90px;
-      margin: 10px 0;
-    }
-
-    .ad-interstitial {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.8);
-      z-index: 100000;
-      display: none;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .ad-rewarded {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.8);
-      z-index: 100000;
-      display: none;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      color: white;
-    }
-
-    .ad-close-btn {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background: #ff5e01;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      font-size: 20px;
-      cursor: pointer;
-    }
-
-    /* Ad Styling */
-    #bannerAd {
-      width: 100%;
-      height: 90px;
-      background-color: rgba(0, 0, 0, 0.3);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: white;
-      font-size: 14px;
-    }
-
-    #interstitialAd {
-      width: 90%;
-      max-width: 600px;
-      height: 80vh;
-      background-color: rgba(0, 0, 0, 0.3);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: white;
-      font-size: 16px;
-      border-radius: 10px;
-    }
-
-    #rewardedAd {
-      width: 90%;
-      max-width: 600px;
-      height: 80vh;
-      background-color: rgba(0, 0, 0, 0.3);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: white;
-      font-size: 16px;
-      border-radius: 10px;
-      flex-direction: column;
-      padding: 20px;
-      text-align: center;
-    }
-
-    .ad-loading {
-      animation: pulse 1.5s infinite;
-    }
-
-    @keyframes pulse {
-      0% { opacity: 0.5; }
-      50% { opacity: 1; }
-      100% { opacity: 0.5; }
-    }
   </style>
 </head>
 <body>
@@ -976,13 +863,6 @@
     <div class="current-artist" id="currentArtist"></div>
   </div>
 
-  <!-- Banner Ad Container -->
-  <div class="ad-container">
-    <div id="bannerAd" class="ad-banner">
-      <p>Cargando anuncio...</p>
-    </div>
-  </div>
-
   <div class="categories-container" id="categoriesContainer">
     <!-- Categorías se generarán dinámicamente basadas en reproducciones -->
     <div class="category" id="trendingCategory">
@@ -992,24 +872,6 @@
     <div class="category" id="mostPlayedCategory">
       <h2 class="category-title"><span class="category-icon">🔥</span>Toda la musica</h2>
       <div class="two-column-list" id="mostPlayed"></div>
-    </div>
-  </div>
-
-  <!-- Interstitial Ad Container -->
-  <div id="interstitialAdContainer" class="ad-interstitial">
-    <div id="interstitialAd">
-      <p>Cargando anuncio intersticial...</p>
-      <button class="ad-close-btn" onclick="closeInterstitialAd()">×</button>
-    </div>
-  </div>
-
-  <!-- Rewarded Ad Container -->
-  <div id="rewardedAdContainer" class="ad-rewarded">
-    <div id="rewardedAd">
-      <h3>Anuncio con recompensa</h3>
-      <p>Mira este anuncio completo para obtener recompensas</p>
-      <div id="rewardStatus">Cargando...</div>
-      <button class="ad-close-btn" onclick="closeRewardedAd()">×</button>
     </div>
   </div>
 
@@ -1084,20 +946,11 @@
 
   <!-- Favorites Button -->
   <button class="Favoritosbtn" onclick="toggleFavoritesPanel()">
-    <span>Mi música favorita</span>
+    <span>Mi musca favorita.</span>
   </button>
 
   <!-- Color Thief Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
-
-  <!-- AdMob SDK -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2450621066107103" crossorigin="anonymous"></script>
-
-  <!-- Start.io SDK -->
-  <script type="text/javascript" src="https://ad-delivery.net/adsdk/startapp_loader.js"></script>
-
-  <!-- IronSource SDK -->
-  <script type="text/javascript" src="https://native-assets.ironsrc.com/mediation/ironsource.js"></script>
 
   <script>
     // Variables globales
@@ -1113,7 +966,6 @@
     let currentArtistFilter = null;
     let currentAlbumFilter = null;
     let pendingFilter = null;
-    let adCounter = 0;
     const colorThief = new ColorThief();
 
     // Elementos del DOM
@@ -1137,17 +989,6 @@
     const confirmationTitle = document.getElementById('confirmationTitle');
     const confirmationMessage = document.getElementById('confirmationMessage');
     const filterNameSpan = document.getElementById('filterName');
-    const bannerAd = document.getElementById('bannerAd');
-    const interstitialAdContainer = document.getElementById('interstitialAdContainer');
-    const interstitialAd = document.getElementById('interstitialAd');
-    const rewardedAdContainer = document.getElementById('rewardedAdContainer');
-    const rewardedAd = document.getElementById('rewardedAd');
-    const rewardStatus = document.getElementById('rewardStatus');
-
-    // IDs de anuncios
-    const ADMOB_BANNER_ID = 'ca-app-pub-2450621066107103/7857165136';
-    const STARTIO_APP_ID = '210812010';
-    const IRONSOURCE_APP_KEY = '2009f7a6';
 
     // Datos de las canciones con archivos de audio
     const audioData = [
@@ -1562,185 +1403,6 @@
         releaseDate: "2023-07-15"
       },
     ];
-
-    // ==================== FUNCIONES DE ANUNCIOS ====================
-
-    // Inicializar anuncios
-    function initializeAds() {
-      // Inicializar AdMob
-      initializeAdMob();
-      
-      // Inicializar Start.io
-      initializeStartIO();
-      
-      // Inicializar IronSource
-      initializeIronSource();
-      
-      // Cargar banner al inicio
-      loadBannerAd();
-      
-      // Mostrar intersticial cada 5 canciones
-      audioPlayer.addEventListener('ended', function() {
-        adCounter++;
-        if (adCounter % 5 === 0) {
-          showInterstitialAd();
-        }
-      });
-    }
-
-    // Inicializar AdMob
-    function initializeAdMob() {
-      // Verificar si admob está disponible
-      if (window.adsbygoogle) {
-        // Configurar AdMob
-        (adsbygoogle = window.adsbygoogle || []).pauseAdRequests = 1;
-        
-        // Configurar anuncios de banner
-        bannerAd.innerHTML = `
-          <ins class="adsbygoogle"
-               style="display:inline-block;width:100%;height:90px"
-               data-ad-client="ca-pub-2450621066107103"
-               data-ad-slot="7857165136"></ins>
-          <script>
-            (adsbygoogle = window.adsbygoogle || []).push({});
-          <\/script>
-        `;
-      } else {
-        console.log("AdMob no está disponible");
-        bannerAd.innerHTML = "<p>Anuncio no disponible</p>";
-      }
-    }
-
-    // Inicializar Start.io
-    function initializeStartIO() {
-      if (window.startApp) {
-        const sdk = startApp.set({
-          appID: STARTIO_APP_ID
-        });
-        
-        // Configurar banner
-        sdk.loadBannerMode().showBanner()
-          .then(() => console.log("Start.io banner loaded"))
-          .catch(err => console.log("Start.io banner error", err));
-      } else {
-        console.log("Start.io no está disponible");
-      }
-    }
-
-    // Inicializar IronSource
-    function initializeIronSource() {
-      if (window.ironSource) {
-        ironSource.init({
-          appKey: IRONSOURCE_APP_KEY,
-          adUnits: ["REWARDED_VIDEO", "INTERSTITIAL"]
-        });
-        
-        // Configurar eventos de IronSource
-        setupIronSourceEvents();
-      } else {
-        console.log("IronSource no está disponible");
-      }
-    }
-
-    // Configurar eventos de IronSource
-    function setupIronSourceEvents() {
-      // Eventos para anuncios intersticiales
-      ironSource.onInterstitialEvent = function(event) {
-        console.log("IronSource Interstitial Event:", event);
-        
-        if (event === "IS_INTERSTITIAL_READY") {
-          interstitialAd.innerHTML = "<p>Anuncio intersticial listo</p>";
-        } else if (event === "IS_INTERSTITIAL_SHOW_SUCCEEDED") {
-          interstitialAd.innerHTML = "<p>Anuncio intersticial mostrado</p>";
-        } else if (event === "IS_INTERSTITIAL_SHOW_FAILED") {
-          interstitialAd.innerHTML = "<p>Error al mostrar intersticial</p>";
-          closeInterstitialAd();
-        } else if (event === "IS_INTERSTITIAL_CLOSED") {
-          closeInterstitialAd();
-        }
-      };
-      
-      // Eventos para anuncios con recompensa
-      ironSource.onRewardedVideoEvent = function(event) {
-        console.log("IronSource Rewarded Event:", event);
-        
-        if (event === "IS_REWARDED_VIDEO_AVAILABLE") {
-          rewardStatus.textContent = "Anuncio con recompensa listo";
-        } else if (event === "IS_REWARDED_VIDEO_COMPLETED") {
-          rewardStatus.textContent = "¡Recompensa obtenida!";
-          // Aquí puedes otorgar la recompensa al usuario
-          setTimeout(closeRewardedAd, 2000);
-        } else if (event === "IS_REWARDED_VIDEO_CLOSED") {
-          closeRewardedAd();
-        } else if (event === "IS_REWARDED_VIDEO_SHOW_FAILED") {
-          rewardStatus.textContent = "Error al mostrar anuncio";
-          setTimeout(closeRewardedAd, 2000);
-        }
-      };
-    }
-
-    // Cargar banner
-    function loadBannerAd() {
-      if (window.adsbygoogle) {
-        (adsbygoogle = window.adsbygoogle || []).pauseAdRequests = 0;
-      }
-      
-      bannerAd.classList.add('ad-loading');
-      setTimeout(() => {
-        bannerAd.classList.remove('ad-loading');
-      }, 2000);
-    }
-
-    // Mostrar anuncio intersticial
-    function showInterstitialAd() {
-      if (window.ironSource && ironSource.isInterstitialReady()) {
-        interstitialAdContainer.style.display = 'flex';
-        interstitialAd.innerHTML = "<p>Mostrando anuncio intersticial...</p>";
-        ironSource.showInterstitial();
-      } else {
-        // Fallback a AdMob si IronSource no está disponible
-        if (window.adsbygoogle) {
-          interstitialAdContainer.style.display = 'flex';
-          interstitialAd.innerHTML = `
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-2450621066107103"
-                 data-ad-slot="7857165136"
-                 data-ad-format="auto"
-                 data-full-width-responsive="true"></ins>
-            <script>
-              (adsbygoogle = window.adsbygoogle || []).push({});
-            <\/script>
-          `;
-        } else {
-          console.log("No hay anuncios intersticiales disponibles");
-        }
-      }
-    }
-
-    // Cerrar anuncio intersticial
-    function closeInterstitialAd() {
-      interstitialAdContainer.style.display = 'none';
-    }
-
-    // Mostrar anuncio con recompensa
-    function showRewardedAd() {
-      if (window.ironSource && ironSource.isRewardedVideoAvailable()) {
-        rewardedAdContainer.style.display = 'flex';
-        rewardStatus.textContent = "Cargando anuncio con recompensa...";
-        ironSource.showRewardedVideo();
-      } else {
-        rewardStatus.textContent = "No hay anuncios con recompensa disponibles en este momento";
-        setTimeout(closeRewardedAd, 2000);
-      }
-    }
-
-    // Cerrar anuncio con recompensa
-    function closeRewardedAd() {
-      rewardedAdContainer.style.display = 'none';
-    }
-
-    // ==================== FUNCIONES DEL REPRODUCTOR ====================
 
     // Función para actualizar el color de fondo basado en la portada
     function updateBackgroundColorFromCover() {
@@ -2596,9 +2258,6 @@
           pendingFilter = null;
         }
       });
-
-      // Inicializar anuncios
-      initializeAds();
     };
   </script>
 </body>
