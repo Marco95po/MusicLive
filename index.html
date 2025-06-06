@@ -1,0 +1,2264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Music Live</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(-45deg, #ff7301, #ff0055, #0c83b3, #00ff88);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      z-index: 1000;
+      padding: 10px 0;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .Texp {
+      color: #ff7301;
+      margin: 0;
+      font-size: 2rem;
+    }
+
+    .categories-container {
+      margin-top: 140px;
+      padding: 0;
+    }
+
+    .category {
+      margin-bottom: 40px;
+    }
+
+    .category-title {
+      font-size: 1.0rem;
+      margin-bottom: 15px;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      animation: fadeIn 1.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+          opacity: 0;
+          transform: translateY(-20px);
+      }
+      to {
+          opacity: 1;
+          transform: translateY(0);
+      }
+    }
+
+    .category-icon {
+      margin-right: 10px;
+      color: #ff5e01;
+    }
+
+    .carousel {
+      display: flex;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      padding: 10px 0;
+      scrollbar-width: none;
+    }
+
+    .carousel::-webkit-scrollbar {
+      display: none;
+    }
+
+    .song-item {
+      flex: 0 0 auto;
+      width: 160px;
+      margin: 0 5px;
+      transition: transform 0.3s;
+      position: relative;
+      opacity: 0;
+      animation: fadeIn 0.5s forwards;
+    }
+
+    .song-item {
+      perspective: 1000px;
+    }
+
+    .song-item img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      transform-style: preserve-3d;
+      animation: subtleFloat 6s ease-in-out infinite;
+      filter: brightness(0.98);
+    }
+
+    .song-item:hover img {
+      transform: scale(1.05) rotateY(10deg);
+      box-shadow: 0 8px 25px rgba(255, 94, 1, 0.5);
+      filter: brightness(1.05);
+      animation-play-state: paused;
+    }
+
+    @keyframes subtleFloat {
+      0%, 100% { transform: translateY(0) rotateY(0); }
+      25% { transform: translateY(-4px) rotateY(2deg); }
+      50% { transform: translateY(0) rotateY(0); }
+      75% { transform: translateY(-4px) rotateY(-2deg); }
+    }
+
+    .song-item img:hover {
+      box-shadow: 0 8px 16px rgba(255, 94, 1, 0.4);
+    }
+
+    .song-info {
+      padding: 8px 0;
+    }
+
+    .song-title {
+      display: block;
+      color: #fff;
+      font-size: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .artist-name {
+      display: block;
+      margin-top: 5px;
+      color: #aaa;
+      font-size: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .Nuevo {
+      display: block;
+      margin-top: 5px;
+      color: #ff5e01;
+      font-size: 10px;
+      font-weight: bold;
+    }
+
+    .favorite-btn {
+      background-color: transparent;
+      color: #ff5e01;
+      border: 1px solid #ff5e01;
+      padding: 5px 8px;
+      border-radius: 15px;
+      cursor: pointer;
+      margin-top: 5px;
+      font-size: 12px;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    .favorite-btn:hover {
+      background-color: #ff5e01;
+      color: white;
+    }
+
+    .favorite-btn.added {
+      background-color: #ff5e01;
+      color: rgb(0, 0, 0);
+    }
+
+    .favorite-count {
+      display: block;
+      margin-top: 3px;
+      color: hsl(0, 100%, 98%);
+      font-size: 10px;
+      text-align: center;
+    }
+
+    .play-count {
+      display: block;
+      margin-top: 3px;
+      color: #aaa;
+      font-size: 10px;
+      text-align: center;
+    }
+
+    .carousel-nav {
+      display: flex;
+      justify-content: flex-end;
+      margin-right: 20px;
+    }
+
+    .nav-btn {
+      background-color: rgba(255, 174, 0, 0.7);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      margin-left: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .nav-btn:hover {
+      background-color: #ff5e01;
+      transform: scale(1.1);
+    }
+
+    /* Floating Player Styles */
+    #floatingPlayer {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(0, 0, 0, 0.9);
+      border: 2px solid #333;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+      padding: 20px;
+      z-index: 9999;
+      text-align: center;
+      width: 320px;
+      transition: background-color 0.5s ease;
+    }
+
+    #floatingPlayer.minimized {
+      width: 97%;
+      height: 80px;
+      padding: 10px;
+      top: auto;
+      bottom: 0;
+      left: 0;
+      transform: none;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    #floatingPlayer.minimized img,
+    #floatingPlayer.minimized #progressContainer,
+    #floatingPlayer.minimized #timeContainer,
+    #floatingPlayer.minimized #playlistPanel {
+      display: none;
+    }
+
+    #floatingPlayer.minimized #info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: antiquewhite;
+      font-size: 14px;
+      margin-left: 10px;
+      flex: 1;
+    }
+
+    #floatingPlayer.minimized #controls {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      flex: 1;
+    }
+
+    #floatingPlayer.minimized #controls button {
+      padding: 8px;
+      background: #333;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      margin: 0 5px;
+      width: 35px;
+      height: 35px;
+    }
+
+    #floatingPlayer img {
+      width: 100%;
+      height: auto;
+      border-radius: 1000px;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+      animation: rotate 3s linear infinite;
+      transform-origin: center center;
+    }
+
+    @keyframes rotate {
+      from {
+          transform: rotate(0deg);
+      }
+      to {
+          transform: rotate(360deg);
+      }
+    }
+
+    #closeButton {
+      position: absolute;
+      top: 5px;
+      right: 10px;
+      background: #ff5e01;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 25px;
+      height: 25px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    #minimizeButton {
+      position: absolute;
+      top: 5px;
+      right: 40px;
+      background: #ff5e01;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 25px;
+      height: 25px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    #controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-top: 20px;
+      background: rgba(30, 30, 30, 0.9);
+      padding: 15px;
+      border-radius: 10px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    #controls button {
+      background: transparent;
+      color: white;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+      width: auto;
+      height: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      font-size: 16px;
+    }
+
+    #controls button:hover {
+      color: #ff5e01;
+      transform: scale(1.1);
+    }
+
+    #playPauseButton {
+      background: #ff5e01 !important;
+      color: white !important;
+      border-radius: 50%;
+      width: 40px !important;
+      height: 40px !important;
+      padding: 10px !important;
+      margin: 0 10px !important;
+    }
+
+    #playPauseButton:hover {
+      background: #ff8c00 !important;
+      transform: scale(1.1) !important;
+    }
+
+    #progressContainer {
+      width: 100%;
+      background: #444;
+      height: 6px;
+      border-radius: 3px;
+      margin: 15px 0;
+      cursor: pointer;
+      position: relative;
+    }
+
+    #progressBar {
+      height: 100%;
+      background: #ff5e01;
+      border-radius: 3px;
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+
+    #timeContainer {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      color: #aaa;
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+
+    #volumeControl {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-left: 15px;
+    }
+
+    #volumeControl input {
+      width: 80px;
+    }
+
+    #floatingPlayer.minimized #controls {
+      padding: 5px;
+      background: transparent;
+      width: auto;
+    }
+
+    #floatingPlayer.minimized #controls button {
+      padding: 5px;
+      font-size: 14px;
+    }
+
+    #floatingPlayer.minimized #playPauseButton {
+      width: 30px !important;
+      height: 30px !important;
+      padding: 5px !important;
+    }
+
+    #playPauseButton {
+      background: #ff5e01 !important;
+      width: 50px;
+      height: 50px;
+    }
+
+    #info {
+      margin-bottom: 10px;
+      color: rgb(255, 145, 0);
+      text-align: center;
+      transition: color 0.3s ease;
+    }
+
+    #songTitle {
+      font-size: 1.2rem;
+      display: block;
+      margin-bottom: 5px;
+      transition: color 0.3s ease;
+    }
+
+    #artistName, #albumTitle {
+      font-size: 0.9rem;
+      color: #dfd8d8;
+      transition: color 0.3s ease;
+    }
+
+    /* Playlist Panel */
+    #playlistPanel {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #282828;
+      color: #ffffff;
+      border-radius: 10px;
+      padding: 20px;
+      width: 80%;
+      max-width: 600px;
+      max-height: 70vh;
+      overflow-y: auto;
+      z-index: 10000;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+    }
+
+    #playlistPanel h2 {
+      color: #ff5e01;
+      margin-top: 0;
+    }
+
+    #playlistPanel input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 5px;
+      background-color: #404040;
+      color: #ffffff;
+      font-size: 14px;
+      outline: none;
+    }
+
+    #playlistPanel input[type="text"]::placeholder {
+      color: #aaa;
+    }
+
+    .playlist-item {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+      cursor: pointer;
+      margin-bottom: 5px;
+    }
+
+    .playlist-item:hover {
+      background-color: rgba(255, 94, 1, 0.2);
+    }
+
+    .playlist-item.active {
+      background-color: rgba(255, 94, 1, 0.4);
+    }
+
+    .playlist-item img {
+      width: 50px;
+      height: 50px;
+      border-radius: 5px;
+      margin-right: 15px;
+      object-fit: cover;
+    }
+
+    .playlist-item-info {
+      flex: 1;
+    }
+
+    .playlist-item-title {
+      font-weight: bold;
+      margin-bottom: 3px;
+    }
+
+    .playlist-item-artist {
+      font-size: 12px;
+      color: #aaa;
+    }
+
+    .playlist-item-plays {
+      font-size: 12px;
+      color: #ff5e01;
+    }
+
+    /* Favorites Panel */
+    #favoritesPanel {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #282828;
+      border-radius: 10px;
+      padding: 20px;
+      width: 80%;
+      max-width: 600px;
+      max-height: 70vh;
+      overflow-y: auto;
+      z-index: 10000;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+    }
+
+    #closeFavoritesButton {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: transparent;
+      color: #ff5e01;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    #favoritesPanel h2 {
+      color: #ff5e01;
+      margin-top: 0;
+    }
+
+    #favoritesSearchInput {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 5px;
+      background-color: #404040;
+      color: #ffffff;
+      font-size: 14px;
+      outline: none;
+    }
+
+    /* Search Bar */
+    #searchInput {
+      padding: 10px 15px;
+      margin-top: 10px;
+      width: 80%;
+      max-width: 500px;
+      border-radius: 25px;
+      border: 2px solid #ff5e01;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.3s ease;
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    #searchInput:focus {
+      border-color: #ff8c00;
+      box-shadow: 0 0 10px rgba(255, 94, 1, 0.5);
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    #searchInput::placeholder {
+      color: #ccc;
+    }
+
+    /* Favorites Button */
+    .Favoritosbtn {
+      background-color: #ffffff;
+      color: rgb(0, 0, 0);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 25px;
+      cursor: pointer;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      animation: colorChange 8s infinite alternate;
+    }
+
+    @keyframes colorChange {
+      0% {
+          background-color: #ffffff;
+      }
+      25% {
+          background-color: #ffcccb;
+      }
+      50% {
+          background-color: #b5ead7;
+      }
+      75% {
+          background-color: #c7ceea;
+      }
+      100% {
+          background-color: #ffddac;
+      }
+    }
+
+    .Favoritosbtn:hover {
+      animation: none;
+      background-color: #ffa600;
+      transform: translateY(-3px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Audio Player */
+    #audioPlayer {
+      width: 100%;
+      margin-bottom: 15px;
+      display: none;
+    }
+
+    /* Scrollbar styling */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #ff5e01;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #333;
+    }
+
+    /* Artist filter styles */
+    .artist-filter {
+      display: none !important; /* Esto asegura que esté oculto */
+    }
+
+    .current-artist {
+      text-align: center;
+      margin-top: 10px;
+      color: #ff5e01;
+      font-size: 1.2rem;
+      display: none;
+    }
+    
+    #closePlaylistButton {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: transparent;
+      color: #ff5e01;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      z-index: 100;
+    }
+
+    #closePlaylistButton:hover {
+      color: #ff8c00;
+      transform: scale(1.1);
+    }
+
+    #closePlaylistButton:focus {
+      outline: none;
+    }
+    
+    #trendingCategory .carousel img {
+      border-radius: 50%;
+      object-fit: cover;
+      width: 100px;
+      height: 100px;
+      aspect-ratio: 1/1;
+    }
+
+    /* Si son divs con background-image */
+    #trendingCategory .carousel .item {
+      border-radius: 50%;
+      background-size: cover;
+      background-position: center;
+      width: 100px;
+      height: 100px;
+    }
+    
+    .two-column-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      justify-items: center;
+    }
+
+    .two-column-list .item {
+      flex: 1 1 calc(50% - 15px);
+      box-sizing: border-box;
+    }
+    
+    .two-column-list .item {
+      width: calc(50% - 15px);
+    }
+    
+    /* Estilos para el modo de búsqueda */
+    .search-results-container {
+      margin-top: 140px;
+      padding: 20px;
+    }
+    
+    .search-results-title {
+      color: #fff;
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    
+    .search-results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 15px;
+    }
+    
+    .no-results {
+      color: #aaa;
+      text-align: center;
+      font-size: 1.2rem;
+      margin-top: 50px;
+    }
+    
+    /* Estilos para el modal de confirmación */
+    .confirmation-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      z-index: 10001;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .confirmation-content {
+      background-color: #282828;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+    }
+    
+    .confirmation-content h3 {
+      color: #ff5e01;
+      margin-top: 0;
+    }
+    
+    .confirmation-content p {
+      color: #fff;
+      margin-bottom: 20px;
+    }
+    
+    .confirmation-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+    
+    .confirmation-btn {
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      border: none;
+    }
+    
+    .confirmation-btn.yes {
+      background-color: #ff5e01;
+      color: white;
+    }
+    
+    .confirmation-btn.no {
+      background-color: #333;
+      color: white;
+    }
+    
+    .confirmation-btn:hover {
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1 class="Texp">Music Live</h1>
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="Buscar canciones, artistas o álbumes..." oninput="searchSongs()">
+    </div>
+    <div class="artist-filter" id="artistFilter"></div>
+    <div class="current-artist" id="currentArtist"></div>
+  </div>
+
+  <div class="categories-container" id="categoriesContainer">
+    <!-- Categorías se generarán dinámicamente basadas en reproducciones -->
+    <div class="category" id="trendingCategory">
+      <h2 class="category-title"><span class="category-icon">📈</span>Tendencias</h2>
+      <div class="carousel" id="trending"></div>
+    </div>
+    <div class="category" id="mostPlayedCategory">
+      <h2 class="category-title"><span class="category-icon">🔥</span>Toda la musica</h2>
+      <div class="two-column-list" id="mostPlayed"></div>
+    </div>
+  </div>
+
+  <!-- Contenedor para resultados de búsqueda (oculto inicialmente) -->
+  <div class="search-results-container" id="searchResultsContainer" style="display: none;">
+    <h2 class="search-results-title" id="searchResultsTitle">Resultados de búsqueda</h2>
+    <div class="search-results-grid" id="searchResultsGrid"></div>
+    <div class="no-results" id="noResultsMessage" style="display: none;">No se encontraron resultados</div>
+  </div>
+
+  <!-- Modal de confirmación -->
+  <div class="confirmation-modal" id="confirmationModal">
+    <div class="confirmation-content">
+      <h3 id="confirmationTitle">¿Deseas escuchar solo música de este artista?</h3>
+      <p id="confirmationMessage">Se reproducirán solo las canciones de <span id="filterName"></span></p>
+      <div class="confirmation-buttons">
+        <button class="confirmation-btn yes" onclick="confirmFilter(true)">Sí</button>
+        <button class="confirmation-btn no" onclick="confirmFilter(false)">No</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audio Player (oculto) -->
+  <audio id="audioPlayer"></audio>
+
+  <!-- Floating Player -->
+  <div id="floatingPlayer">
+    <button id="closeButton" onclick="closePlayer()">×</button>
+    <button id="minimizeButton" onclick="toggleMinimize()">_</button>
+    
+    <!-- Contenedor para la imagen del álbum -->
+    <img id="coverImage" src="" alt="Portada" crossorigin="anonymous">
+    
+    <div id="info">
+      <strong id="songTitle">Título</strong><br>
+      <small id="artistName">Artista</small><br>
+      <small id="albumTitle">Álbum</small>
+    </div>
+
+    <!-- En el HTML, agrega el contenedor de progreso -->
+    <div id="progressContainer" onclick="setProgress(event)">
+      <div id="progressBar"></div>
+    </div>
+    <div id="timeContainer">
+      <span id="currentTime">0:00</span><span id="totalTime">0:00</span>
+    </div>
+
+    <div id="controls">
+      <button onclick="prevTrack()">⏮</button>
+      <button id="playPauseButton" onclick="togglePlay()">▶</button>
+      <button onclick="nextTrack()">⏭</button>
+      <button onclick="toggleShuffle()">🔀</button>
+      <button onclick="togglePlaylist()">📋</button>
+    </div>
+  </div>
+
+  <!-- Playlist Panel -->
+  <div id="playlistPanel">
+    <h2>Lista de Reproducción</h2>
+    <input type="text" id="playlistSearchInput" placeholder="Buscar en playlist..." oninput="searchPlaylist()">
+    <div id="playlistItems"></div>
+    <button id="closePlaylistButton">×</button>
+  </div>
+
+  <!-- Favorites Panel -->
+  <div id="favoritesPanel">
+    <button id="closeFavoritesButton" onclick="toggleFavoritesPanel()">×</button>
+    <h2>Mis Favoritos</h2>
+    <input type="text" id="favoritesSearchInput" placeholder="Buscar en favoritos..." oninput="searchFavorites()">
+    <div id="favoritesItems"></div>
+  </div>
+
+  <!-- Favorites Button -->
+  <button class="Favoritosbtn" onclick="toggleFavoritesPanel()">
+    <span>Mi musca favorita.</span>
+  </button>
+
+  <!-- Color Thief Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
+
+  <script>
+    // Variables globales
+    let currentIndex = 0;
+    let isPlaying = false;
+    let isShuffle = false;
+    let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    let favoriteCounts = JSON.parse(localStorage.getItem('favoriteCounts')) || {};
+    let playCounts = JSON.parse(localStorage.getItem('playCounts')) || {};
+    let recentPlays = JSON.parse(localStorage.getItem('recentPlays')) || [];
+    let currentPlaylist = [];
+    let progressInterval;
+    let currentArtistFilter = null;
+    let currentAlbumFilter = null;
+    let pendingFilter = null;
+    const colorThief = new ColorThief();
+
+    // Elementos del DOM
+    const audioPlayer = document.getElementById('audioPlayer');
+    const mostPlayedContainer = document.getElementById('mostPlayed');
+    const trendingContainer = document.getElementById('trending');
+    const playlistPanel = document.getElementById('playlistPanel');
+    const playlistItems = document.getElementById('playlistItems');
+    const favoritesPanel = document.getElementById('favoritesPanel');
+    const favoritesItems = document.getElementById('favoritesItems');
+    const floatingPlayer = document.getElementById('floatingPlayer');
+    const coverImage = document.getElementById('coverImage');
+    const artistFilterContainer = document.getElementById('artistFilter');
+    const currentArtistDisplay = document.getElementById('currentArtist');
+    const categoriesContainer = document.getElementById('categoriesContainer');
+    const searchResultsContainer = document.getElementById('searchResultsContainer');
+    const searchResultsGrid = document.getElementById('searchResultsGrid');
+    const noResultsMessage = document.getElementById('noResultsMessage');
+    const searchResultsTitle = document.getElementById('searchResultsTitle');
+    const confirmationModal = document.getElementById('confirmationModal');
+    const confirmationTitle = document.getElementById('confirmationTitle');
+    const confirmationMessage = document.getElementById('confirmationMessage');
+    const filterNameSpan = document.getElementById('filterName');
+
+    // Datos de las canciones con archivos de audio
+    const audioData = [
+      {
+        id: "audio39",
+        audioSrc: "https://www.dropbox.com/scl/fi/8rxh1zmz1jnbw3jnyw30u/Todo-se-Acabo-Emsek.wav?rlkey=gdjt2d5ixehg02f66zrmn2oo4&st=0i6u59nc&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/qqQFNy5t/Picsart-25-06-05-20-49-57-522.jpg",
+        title: "Todo termino",
+        artist: "Emsek",
+        album: "Sin retorno al pasado",
+        category: ["mostPlayed"],
+        releaseDate: "2023-07-15"
+      },
+      {
+        id: "audio38",
+        audioSrc: "https://www.dropbox.com/scl/fi/09x3ro2pgjk5uytus7qnf/perdoname-emsek-video-oficial.mp3?rlkey=w5wnge74deqrg9j5cugdgso93&st=lsdfyfaw&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/qqQFNy5t/Picsart-25-06-05-20-49-57-522.jpg",
+        title: "Perdoname",
+        artist: "Emsek",
+        album: "Sin retorno al pasado",
+        category: ["mostPlayed"],
+        releaseDate: "2023-07-15"
+      },
+      {
+        id: "audio37",
+        audioSrc: "https://www.dropbox.com/scl/fi/0b08k7lmf6bi3unghwi0o/Nada-es-secillo-Oswaldo.wav?rlkey=00zjb5omwsyc7lpa4epk2dxzx&st=ccg7kvut&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/qqQFNy5t/Picsart-25-06-05-20-49-57-522.jpg",
+        title: "Nada es sencillo",
+        artist: "Emsek",
+        album: "Sin retorno al pasado",
+        category: ["mostPlayed"],
+        releaseDate: "2023-07-15"
+      },
+      {
+        id: "audio36",
+        audioSrc: "https://www.dropbox.com/scl/fi/vyrkq3cz1d32v6cbrml99/Mi-mussa-Emsek-HFcompany-Estudios.wav?rlkey=8mzfyjhjbqasi7cvcynku8e29&st=vqt6f1jn&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/qqQFNy5t/Picsart-25-06-05-20-49-57-522.jpg",
+        title: "Mi mussa",
+        artist: "Emsek",
+        album: "Sin retorno al pasado",
+        category: ["mostPlayed"],
+        releaseDate: "2023-07-15"
+      },
+      {
+        id: "audio35",
+        audioSrc: "https://www.dropbox.com/scl/fi/scvt36sujqhsk7abj4q9g/Los-tiempos-cambian-Emsek-ft-Charl-s-weed.wav?rlkey=hbvmut3vj4wyx166y6nv53vi9&st=vin03rl8&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/qqQFNy5t/Picsart-25-06-05-20-49-57-522.jpg",
+        title: "Los tiempos cambian",
+        artist: "Emsek ft charl s weed",
+        album: "Sin retorno al pasado",
+        category: ["mostPlayed"],
+        releaseDate: "2023-07-15"
+      },
+      {
+        id: "audio34",
+        audioSrc: "https://www.dropbox.com/scl/fi/4q3fc1b7dcbm3s0irdriy/Emsek-tus-errores.wav?rlkey=dn1bgzk4im7jwxo5p46osot4h&st=rtaznshz&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/qqQFNy5t/Picsart-25-06-05-20-49-57-522.jpg",
+        title: "Tus errores",
+        artist: "Emsek",
+        album: "Sin retorno al pasado",
+        category: ["mostPlayed"],
+        releaseDate: "2023-07-15"
+      },
+      {
+        id: "audio33",
+        audioSrc: "https://www.dropbox.com/scl/fi/rv1nm22lnovi1phko6ufn/Emsek-No-fue-lo-mismo.wav?rlkey=ojx6h1hpudu8q9v4h0b5ncm77&st=mwv4rcsk&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/qqQFNy5t/Picsart-25-06-05-20-49-57-522.jpg",
+        title: "No fue lo mismo",
+        artist: "Emsek",
+        album: "Sin retorno al pasado",
+        category: ["mostPlayed"],
+        releaseDate: "2023-07-15"
+      },
+      {
+        id: "audio32",
+        audioSrc: "https://www.dropbox.com/scl/fi/veoiwn4fh0ikcb6rqn39y/Emsek-len-busca-de-labictoria.wav?rlkey=40y7btf8uvd4bxxpk4uaogiwv&st=9my5bur7&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/qqQFNy5t/Picsart-25-06-05-20-49-57-522.jpg",
+        title: "En busca de la victoria",
+        artist: "Emsek",
+        album: "Sin retorno al pasado",
+        category: ["mostPlayed"],
+        releaseDate: "2023-07-15"
+      },
+      {
+        id: "audio31",
+        audioSrc: "https://www.dropbox.com/scl/fi/jk2c7g0fixoaqv5e5ajri/El-fin-de-hiastoria-EMSEK.wav?rlkey=kxgq808oded0cdhcd6woh3tdz&st=27t00kb8&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/qqQFNy5t/Picsart-25-06-05-20-49-57-522.jpg",
+        title: "El fin de la historia",
+        artist: "Emsek",
+        album: "Sin retorno al pasado",
+        category: ["mostPlayed"],
+        releaseDate: "2023-07-15"
+      },
+      {
+        id: "audio30",
+        audioSrc: "https://www.dropbox.com/scl/fi/1cryb2i8f0nrl9e1jrqs6/Donde-estan-Emsek-1.wav?rlkey=2diknqmy040c6nqsmud6gk4y5&st=emsijin5&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/qqQFNy5t/Picsart-25-06-05-20-49-57-522.jpg",
+        title: "Donde estan",
+        artist: "Emsek",
+        album: "Sin retorno al pasado",
+        category: ["mostPlayed"],
+        releaseDate: "2023-07-15"
+      },
+      {
+        id: "audio29",
+        audioSrc: "https://www.dropbox.com/scl/fi/yhwywjevsxs0b6dx94o9p/DICE3N-DEMI-EMSEK.wav?rlkey=2qrzmoa94dmd6ytnq2jdvdxgw&st=z6vk3q4b&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/qqQFNy5t/Picsart-25-06-05-20-49-57-522.jpg",
+        title: "Dicen",
+        artist: "Emsek",
+        album: "Sin retorno al pasado",
+        category: ["mostPlayed"],
+        releaseDate: "2023-07-15"
+      },
+       {
+        id: "audio28",
+        audioSrc: "https://www.dropbox.com/scl/fi/rq7dnfuqaywgjdo6dp9de/1-Modo-avion-Dany-Zm-El-rencuentro..flac?rlkey=xfv7h1xurdroh0ct3xu71ge9m&st=3lk9eqin&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/y6GCPTbn/Picsart-25-06-05-21-21-40-631.jpg",
+        title: "Modo Avion",
+        artist: "Dany Zm",
+        album: "El rencuentro",
+        category: ["mostPlayed"],
+        releaseDate: "2023-07-15"
+      },
+      {
+        id: "audio27",
+        audioSrc: "https://www.dropbox.com/scl/fi/a114cb367y2fxgvs9i3w1/La-MA-ANITAS.mp3?rlkey=98qb6m495r0e6xhobel6q8po6&st=04cdw74n&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/BvtnJNRL/Picsart-25-06-05-18-32-58-256.jpg",
+        title: "Las Mañanitas, dia de las madres",
+        artist: "Sain Nt",
+        album: "",
+        category: [""],
+        releaseDate: "2023-07-15"
+      },
+      {
+        id: "audio26",
+        audioSrc: "https://www.dropbox.com/scl/fi/5dlej4wkll16uxyz3knwf/vuelve-9-dany-zm.mp3?rlkey=1mw4i576qw1q6xn4wofshg3gz&st=wx7ody7c&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/2yd5fvpV/FB-IMG-1749150048969.jpg",
+        title: "Vuelve",
+        artist: "Dany Zm",
+        album: "Construyendo el barco",
+        category: ["mostPlayed"],
+        releaseDate: "2023-07-15"
+      },
+      {
+        id: "audio25",
+        audioSrc: "https://www.dropbox.com/scl/fi/xmca1v67r0foa02ah0ix5/nuestro-cuento-7-dany-zm.mp3?rlkey=4wdtldt4ch8usesgbsqdkl0o1&st=0mvohs3m&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/2yd5fvpV/FB-IMG-1749150048969.jpg",
+        title: "Nuestro cuento",
+        artist: "Dany Zm",
+        album: "Construyendo el barco",
+        category: ["mostPlayed"],
+        releaseDate: "2023-07-15"
+      },
+      {
+        id: "audio24",
+        audioSrc: "https://www.dropbox.com/scl/fi/ybuowdfnam5frrjksy570/me-dejo-solo-5-dany-zm.mp3?rlkey=9oiwuxep5v6se4r7af6qlwhb2&st=vcwj9wi8&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/2yd5fvpV/FB-IMG-1749150048969.jpg",
+        title: "Me dejo solo",
+        artist: "Dany Zm ft Sain Nt y Yescor Cruz",
+        album: "Construyendo el barco",
+        category: ["mostPlayed"],
+        releaseDate: "2023-07-15"
+      },
+      {
+        id: "audio23",
+        audioSrc: "https://www.dropbox.com/scl/fi/fo85o8m1etbo68m9a46xq/lluvia-8-dany-zm.mp3?rlkey=ywh0y4ezduhd3q7bjvh5orki1&st=kpitzejm&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/2yd5fvpV/FB-IMG-1749150048969.jpg",
+        title: "Lluvia",
+        artist: "Dany Zm",
+        album: "Construyendo el barco",
+        category: ["mostPlayed"],
+        releaseDate: "2023-07-15"
+      },
+      {
+        id: "audio22",
+        audioSrc: "https://www.dropbox.com/scl/fi/6588ikrqstte1wzjkreja/hasta-cuando-1-dany-zm.mp3?rlkey=uqpq1cpmnj1e5pnd5ndxwpb47&st=27b4klc9&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/2yd5fvpV/FB-IMG-1749150048969.jpg",
+        title: "Hasta cuando",
+        artist: "Dany Zm",
+        album: "Construyendo el barco",
+        category: ["mostPlayed"],
+        releaseDate: "2023-07-15"
+      },
+      {
+        id: "audio21",
+        audioSrc: "https://www.dropbox.com/scl/fi/7qvtyhs6smsgnu56z9ch7/en-gano-6-dany-zm.mp3?rlkey=lzu6kbgqicirph9sp4ndhyq90&st=mgjaykqv&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/2yd5fvpV/FB-IMG-1749150048969.jpg",
+        title: "Engaño",
+        artist: "Dany Zm",
+        album: "Construyendo el barco",
+        category: ["mostPlayed"],
+        releaseDate: "2023-07-15"
+      },
+      {
+        id: "audio20",
+        audioSrc: "https://www.dropbox.com/scl/fi/han7yoy13ncejnz4exj3r/dalex-especial-cover-dany-zm.mp3?rlkey=8pchaqdtz2iq854i8zrhxfriw&st=qpusqj1c&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/2yd5fvpV/FB-IMG-1749150048969.jpg",
+        title: "Especial cover",
+        artist: "Dany Zm",
+        album: "Construyendo el barco",
+        category: ["mostPlayed"],
+        releaseDate: "2023-07-15"
+      },
+      {
+        id: "audio19",
+        audioSrc: "https://www.dropbox.com/scl/fi/l4d8dvoahieq4yqf536ol/CORITO-SANO-DANY-ZM-VA-YEZKOR-CRUZ-SAIN-NT-VERSION-T.E.C.mp3?rlkey=wsj8578k3e14hqr74npb3krjb&st=dpex1ugt&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/2yd5fvpV/FB-IMG-1749150048969.jpg",
+        title: "Corito sano",
+        artist: "Dany Zm",
+        album: "Construyendo el barco",
+        category: ["mostPlayed"],
+        releaseDate: "2023-07-15"
+      },
+      {
+        id: "audio18",
+        audioSrc: "https://www.dropbox.com/scl/fi/v4remtzyol50e00rvhpen/beyby-4dany-zm.mp3?rlkey=y803hhbgxghxrlgsvpe9w16i9&st=z26xha37&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/2yd5fvpV/FB-IMG-1749150048969.jpg",
+        title: "Bay bay",
+        artist: "Dany Zm",
+        album: "Construyendo el barco",
+        category: ["mostPlayed"],
+        releaseDate: "2023-07-15"
+      },
+      {
+        id: "audio17",
+        audioSrc: "https://www.dropbox.com/scl/fi/ctedqktecjqbqvd2t5uct/bailado-3-dany-zm.mp3?rlkey=l1zrwqrevorjbxjq3u7gi4k3t&st=ujnra5ts&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/2yd5fvpV/FB-IMG-1749150048969.jpg",
+        title: "Bailalo",
+        artist: "Dany Zm",
+        album: "Construyendo el barco",
+        category: ["mostPlayed"],
+        releaseDate: "2023-07-15"
+      },
+      {
+        id: "audio16",
+        audioSrc: "https://www.dropbox.com/scl/fi/lbohzzgaf7xnw1v7o3ec9/ay-estare-2-dany-zm.mp3?rlkey=41qeo3w154ctk8gvlzl2aa0v1&st=vfjq6vql&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/2yd5fvpV/FB-IMG-1749150048969.jpg",
+        title: "Hay estare",
+        artist: "Dany Zm",
+        album: "Construyendo el barco",
+        category: ["mostPlayed"],
+        releaseDate: "2023-07-15"
+      },
+      {
+        id: "audio15",
+        audioSrc: "https://www.dropbox.com/scl/fi/rpcuad35hjh9pnwm890mt/CONFIA-EN-MIALEXX-CRAZY-FT-SAIN-NT-DOBLE-AA-NC-BEATS.mp3?rlkey=lcom1zmvuhptrui5cyyxex7vj&st=7f76fnfo&raw=1", // Audio de muestra 2
+        cover: "http://i.postimg.cc/cHwpq9xH/Picsart-25-06-04-21-53-31-587.jpg",
+        title: "Confia en mi",
+        artist: "Alexx Crazy Ft Sain Nt",
+        album: "HFcompany",
+        category: ["mostPlayed"],
+        releaseDate: "2023-07-15"
+      },
+      {
+        id: "audio14",
+        audioSrc: "https://www.dropbox.com/scl/fi/dxhc72dtjjadyzrwupddg/Cosas-de-la-vida-Escribo.wav?rlkey=li3bvmvax97t2f4ion1oiffw8&st=pc6b4j2z&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/rwC9j8zz/Picsart-25-06-04-14-11-53-030.jpg",
+        title: "Cosas De la vida",
+        artist: "Escribo",
+        album: "HFcompany",
+        category: ["mostPlayed"],
+        releaseDate: "2023-07-15"
+      },
+      {
+        id: "audio13",
+        audioSrc: "https://www.dropbox.com/scl/fi/xojiflo0c5ydogct9j40v/Escribo.wav?rlkey=wmpwws77lgru2oniwrak9vv8r&st=0inkf8f4&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/rwC9j8zz/Picsart-25-06-04-14-11-53-030.jpg",
+        title: "Me siento mal",
+        artist: "Escribo",
+        album: "HFcompany",
+        category: ["mostPlayed"],
+        releaseDate: "2023-07-15"
+      },
+      {
+        id: "audio12",
+        audioSrc: "https://www.dropbox.com/scl/fi/7ydiw8abe4r4fxfiiz5ij/Pensando-Escribo.wav?rlkey=elx3ydjh5rkfz2qcqekbgc9yp&st=79eg583g&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/rwC9j8zz/Picsart-25-06-04-14-11-53-030.jpg",
+        title: "Pensado",
+        artist: "Escribo",
+        album: "HFcompany",
+        category: ["mostPlayed"],
+        releaseDate: "2023-07-15"
+      },
+      {
+        id: "audio11",
+        audioSrc: "https://www.dropbox.com/scl/fi/vl4d6mwau9frvxmjm6wwn/Baner.mp3?rlkey=z8jezojlzlyt0i3qp16jrvid9&st=4agh5qsj&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/3RCBGNyR/Picsart-25-06-03-20-44-36-410.jpg",
+        title: "Banner",
+        artist: "Kerim Music",
+        album: "HFcompany",
+        category: ["mostPlayed"],
+        releaseDate: "2023-07-15"
+      },    
+       {
+        id: "audio10",
+        audioSrc: "https://www.dropbox.com/scl/fi/p3nwbfs8wl2cm1woqmb0h/ElevenLabs_2025-06-04T02_25_48_Aria_pre_sp115_s100_sb75_se0_b_m2.mp3?rlkey=s2w83bxhego9gh1qirr2sqgt5&st=95h0fkmg&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/8CKdkTGx/Picsart-25-05-31-18-33-42-979.jpg",
+        title: "Cierra Lo Ojos",
+        artist: "Sain Nt",
+        album: "Proximamente",
+        category: ["mostPlayed"],
+        releaseDate: "2023-07-15"
+      },    
+      {
+        id: "audio9",
+        audioSrc: "https://www.dropbox.com/scl/fi/ot7jezdupw1r44x4a1cci/Recuedos-Aizber-Kerim-Music.mp3?rlkey=rg0efmei6dohoauwqv1u7cgmu&st=5hkexws7&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/yYSYd3rh/FB-IMG-1749001269577.jpg",
+        title: "Recuerdos",
+        artist: "Aizber",
+        album: "HFcompany",
+        category: [""],
+        releaseDate: "2023-07-15"
+      },
+      {
+        id: "audio8",
+        audioSrc: "https://www.dropbox.com/scl/fi/n66wxeygxd8ddchrls1kv/Me-estoy-muriendo-clave-462.wav?rlkey=hfkc487fwb71ziploobu8duqi&st=3cfmfsh9&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/8z3x28cH/Picsart-25-06-03-19-20-10-165.jpg",
+        title: "Me estoy muriendo",
+        artist: "Clave 462",
+        album: "HFcompany",
+        category: ["mostPlayed"],
+        releaseDate: "2023-07-15"
+      },
+      {
+        id: "audio Publicidad 1",
+        audioSrc: "https://www.dropbox.com/scl/fi/dy2jhy8n06e4hckngg1o7/Que-son-los-Spots.mp3?rlkey=s9jv5rspyv7zwoyyofcvi3art&st=7rxsdd2f&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/PrsytN40/Picsart-25-06-03-21-27-48-722.jpg",
+        title: "¿Que es un Spots?",
+        artist: "Kerim Music",
+        album: "HFcompany",
+        category: ["mostPlayed"],
+        releaseDate: "2023-07-15"
+      },
+      {
+        id: "audio7",
+        audioSrc: "https://www.dropbox.com/scl/fi/5ojo4u3dak6gytmkcy605/j-vazquez-me-vuelve-loco-fusa-company.mp3?rlkey=ickcmbzdf3wi1k012e0mygo8e&st=kalzh6lp&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/mkxVhjff/Picsart-25-06-03-17-24-44-959.jpg",
+        title: "Me vuelve loco",
+        artist: "J Vazquez",
+        album: "HFcompany",
+        category: [""],
+        releaseDate: "2023-07-15"
+      },
+      {
+        id: "audio6",
+        audioSrc: "https://www.dropbox.com/scl/fi/dwovntv7djswyqmguk8yd/j-vazquez-aventura-ft-cie-campos-video-liryc.mp3?rlkey=3durnbujd9955pikh47jgyjob&st=rs54jzat&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/mkxVhjff/Picsart-25-06-03-17-24-44-959.jpg",
+        title: "Aventirua",
+        artist: "J Vazquez",
+        album: "HFcompany",
+        category: ["mostPlayed"],
+        releaseDate: "2023-07-15"
+      },
+       {
+        id: "audio5",
+        audioSrc: "https://www.dropbox.com/scl/fi/fi7vh0aizey6iod26en48/Obsecion-j-vazquez.wav?rlkey=ch8el1ronylotfeqyv6romnur&st=e7kyu6wn&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/mkxVhjff/Picsart-25-06-03-17-24-44-959.jpg",
+        title: "Obsecion",
+        artist: "J Vazquez",
+        album: "HFcompany",
+        category: ["mostPlayed"],
+        releaseDate: "2023-07-15"
+      },
+       {
+        id: "audio4",
+        audioSrc: "https://www.dropbox.com/scl/fi/3gnc6sadywpb24ps9z4k9/No-eres-juego-de-nintendo-J-bazquez.wav?rlkey=79nintn3bhle2lyye1nb249e6&st=98gkmxqw&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/mkxVhjff/Picsart-25-06-03-17-24-44-959.jpg",
+        title: "No soy un jugete de nintendo",
+        artist: "J Vazquez",
+        album: "HFcompany",
+        category: ["mostPlayed"],
+        releaseDate: "2023-07-15"
+      },
+      {
+        id: "audio Publicidad",
+        audioSrc: "https://www.dropbox.com/scl/fi/pxrqa5u0yt4xxapqh2erz/Informaci-n.mp3?rlkey=bwi9foffmxn0v9qyr7uk6hf1b&st=zqrfk9kd&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/9V4WSzq1/Picsart-25-06-03-21-12-45-867.jpg",
+        title: "Informacion",
+        artist: "Kerim Music",
+        album: "HFcompany",
+        category: ["mostPlayed"],
+        releaseDate: "2023-07-15"
+      },
+      {
+        id: "audio1",
+        audioSrc: "https://www.dropbox.com/scl/fi/0ufgsv01ji48kj287katv/08-Ad-n-G-x-Sain-Nt-ENVIDIOSOS-REMIX-CON-UE-OS-IN-DINERO.mp3?rlkey=qokxn4amhjr0hmtnhk7bejsje&st=kx7il6mj&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/d0CNHsX2/travis-scott-birds-in-the-trap-sing-mcknight-portada.jpg",
+        title: "Envidiosos remix",
+        artist: "Sain Nt",
+        album: "Kerim Music",
+        category: ["trending"],
+        releaseDate: "2023-07-15"
+      },
+      {
+        id: "audio3",
+        audioSrc: "https://www.dropbox.com/scl/fi/o3tlmgi9pxcpe0g3gbeb0/j-vazquez-FOTO.wav?rlkey=2fe5pexgflyf0uktod1hmlq51&st=izm9vial&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/mkxVhjff/Picsart-25-06-03-17-24-44-959.jpg",
+        title: "Foto",
+        artist: "J Vazquez",
+        album: "HFcompany",
+        category: ["mostPlayed"],
+        releaseDate: "2023-07-15"
+      },
+      {
+        id: "audiopUBLICIDAD2",
+        audioSrc: "https://www.dropbox.com/scl/fi/9yboeqg2lw5wq3s2txksa/favoritas.mp3?rlkey=ggk92138pdi5eqa732kcqg0l1&st=a0vf7iiv&raw=1", // Audio de muestra 2
+        cover: "https://i.postimg.cc/gjWvP86d/Picsart-25-06-04-16-59-42-448.jpg",
+        title: "¿Queson los favoritos?",
+        artist: "Kerim Music",
+        album: "HFcompany",
+        category: ["mostPlayed"],
+        releaseDate: "2023-07-15"
+      },
+    ];
+
+    // Función para actualizar el color de fondo basado en la portada
+    function updateBackgroundColorFromCover() {
+      if (!coverImage.complete) {
+        coverImage.addEventListener('load', function() {
+          extractAndSetColor();
+        });
+      } else {
+        extractAndSetColor();
+      }
+    }
+
+    // Función para extraer y establecer el color
+    function extractAndSetColor() {
+      try {
+        // Obtener el color dominante de la imagen
+        const dominantColor = colorThief.getColor(coverImage);
+        const [r, g, b] = dominantColor;
+        
+        // Convertir RGB a HSL para ajustar la luminosidad
+        const hsl = rgbToHsl(r, g, b);
+        
+        // Ajustar la luminosidad para el fondo (más oscuro)
+        hsl[2] = Math.max(10, hsl[2] * 0.3);
+        
+        // Convertir de nuevo a RGB
+        const adjustedRgb = hslToRgb(hsl[0], hsl[1], hsl[2]);
+        
+        // Aplicar el color al reproductor con transparencia
+        floatingPlayer.style.backgroundColor = `rgba(${adjustedRgb[0]}, ${adjustedRgb[1]}, ${adjustedRgb[2]}, 0.85)`;
+        
+        // Ajustar el color del texto para mejor contraste
+        const textColor = getContrastColor(adjustedRgb);
+        document.getElementById('info').style.color = textColor;
+        document.getElementById('songTitle').style.color = textColor;
+        document.getElementById('artistName').style.color = textColor;
+        document.getElementById('albumTitle').style.color = textColor;
+      } catch (e) {
+        console.error("Error al extraer color de la portada:", e);
+        // Color de respaldo
+        floatingPlayer.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
+        document.getElementById('info').style.color = 'rgb(255, 145, 0)';
+        document.getElementById('songTitle').style.color = 'rgb(255, 145, 0)';
+        document.getElementById('artistName').style.color = '#ccc';
+        document.getElementById('albumTitle').style.color = '#ccc';
+      }
+    }
+
+    // Función para convertir RGB a HSL
+    function rgbToHsl(r, g, b) {
+      r /= 255, g /= 255, b /= 255;
+      const max = Math.max(r, g, b), min = Math.min(r, g, b);
+      let h, s, l = (max + min) / 2;
+
+      if (max === min) {
+        h = s = 0; // achromatic
+      } else {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+          case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+          case g: h = (b - r) / d + 2; break;
+          case b: h = (r - g) / d + 4; break;
+        }
+        h /= 6;
+      }
+
+      return [h * 360, s * 100, l * 100];
+    }
+
+    // Función para convertir HSL a RGB
+    function hslToRgb(h, s, l) {
+      h /= 360;
+      s /= 100;
+      l /= 100;
+      let r, g, b;
+
+      if (s === 0) {
+        r = g = b = l; // achromatic
+      } else {
+        const hue2rgb = (p, q, t) => {
+          if (t < 0) t += 1;
+          if (t > 1) t -= 1;
+          if (t < 1/6) return p + (q - p) * 6 * t;
+          if (t < 1/2) return q;
+          if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+          return p;
+        };
+
+        const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+        const p = 2 * l - q;
+        r = hue2rgb(p, q, h + 1/3);
+        g = hue2rgb(p, q, h);
+        b = hue2rgb(p, q, h - 1/3);
+      }
+
+      return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+    }
+
+    // Función para determinar el color de texto con mejor contraste
+    function getContrastColor(rgb) {
+      // Calcular luminosidad relativa (fórmula WCAG)
+      const luminance = (0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2]) / 255;
+      return luminance > 0.5 ? '#333' : '#fff';
+    }
+
+    // Event listeners para el reproductor de audio
+    audioPlayer.addEventListener('play', () => {
+      isPlaying = true;
+      document.getElementById('playPauseButton').textContent = '⏸';
+      startProgressTimer();
+      
+      // Incrementar el contador de reproducciones cuando comienza a reproducirse
+      const currentSong = currentPlaylist[currentIndex];
+      if (currentSong) {
+        incrementPlayCount(currentSong.id);
+      }
+    });
+
+    audioPlayer.addEventListener('pause', () => {
+      isPlaying = false;
+      document.getElementById('playPauseButton').textContent = '▶';
+      clearInterval(progressInterval);
+    });
+
+    audioPlayer.addEventListener('ended', () => {
+      // Reproducir automáticamente la siguiente canción
+      if (currentPlaylist.length > 0) {
+        if (isShuffle) {
+          // Si está en modo aleatorio, seleccionar una canción aleatoria diferente a la actual
+          let newIndex;
+          do {
+            newIndex = Math.floor(Math.random() * currentPlaylist.length);
+          } while (newIndex === currentIndex && currentPlaylist.length > 1);
+          currentIndex = newIndex;
+        } else {
+          // Si no está en modo aleatorio, ir a la siguiente canción
+          currentIndex = (currentIndex + 1) % currentPlaylist.length;
+        }
+        
+        loadTrack(currentIndex);
+        audioPlayer.play();
+      }
+    });
+
+    audioPlayer.addEventListener('timeupdate', updateProgress);
+
+    audioPlayer.addEventListener('loadedmetadata', () => {
+      updateProgress();
+    });
+
+    // Función para iniciar el temporizador de progreso
+    function startProgressTimer() {
+      clearInterval(progressInterval);
+      progressInterval = setInterval(updateProgress, 100);
+    }
+
+    // Función para actualizar la barra de progreso
+    function updateProgress() {
+      if (!audioPlayer) return;
+      
+      const currentTime = audioPlayer.currentTime;
+      const duration = audioPlayer.duration || 0;
+      
+      // Calcular el porcentaje de progreso
+      const percentage = (currentTime / duration) * 100;
+      
+      // Actualizar la barra de progreso
+      document.getElementById('progressBar').style.width = `${percentage}%`;
+      
+      // Actualizar los tiempos
+      updateTimes(currentTime, duration);
+    }
+
+    // Función para formatear y mostrar los tiempos
+    function updateTimes(currentTime, duration) {
+      const formatTime = (time) => {
+        const minutes = Math.floor(time / 60);
+        const seconds = Math.floor(time % 60);
+        return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+      };
+      
+      document.getElementById('currentTime').textContent = formatTime(currentTime);
+      document.getElementById('totalTime').textContent = formatTime(duration);
+    }
+
+    // Función para establecer la posición de reproducción
+    function setProgress(event) {
+      if (!audioPlayer) return;
+      
+      const progressContainer = event.currentTarget;
+      const rect = progressContainer.getBoundingClientRect();
+      const clickX = event.clientX - rect.left;
+      const progressWidth = rect.width;
+      
+      const newTime = (clickX / progressWidth) * audioPlayer.duration;
+      audioPlayer.currentTime = newTime;
+      
+      updateProgress();
+    }
+
+    // Función para cargar una canción
+    function loadTrack(index) {
+      const song = currentPlaylist[index];
+      if (!song) return;
+
+      // Mostrar el reproductor flotante
+      document.getElementById('floatingPlayer').style.display = "block";
+      
+      // Actualizar la información de la canción
+      document.getElementById('songTitle').textContent = song.title;
+      document.getElementById('artistName').textContent = song.artist;
+      document.getElementById('albumTitle').textContent = song.album || '';
+      document.getElementById('coverImage').src = song.cover;
+      
+      // Actualizar el color de fondo basado en la portada
+      updateBackgroundColorFromCover();
+      
+      // Cargar el audio
+      audioPlayer.src = song.audioSrc;
+      audioPlayer.load();
+      
+      // Actualizar la lista de reproducción para resaltar la canción actual
+      updatePlaylistHighlight();
+    }
+
+    // Función para reproducir una canción específica
+    function playAudio(id) {
+      // Establecer la lista de reproducción actual según los filtros activos
+      if (currentArtistFilter) {
+        currentPlaylist = audioData.filter(song => song.artist.toLowerCase() === currentArtistFilter.toLowerCase());
+      } else if (currentAlbumFilter) {
+        currentPlaylist = audioData.filter(song => song.album && song.album.toLowerCase() === currentAlbumFilter.toLowerCase());
+      } else {
+        currentPlaylist = audioData;
+      }
+      
+      const index = currentPlaylist.findIndex(song => song.id === id);
+      if (index !== -1) {
+        currentIndex = index;
+        loadTrack(currentIndex);
+        audioPlayer.play();
+        isPlaying = true;
+        document.getElementById('playPauseButton').textContent = '⏸';
+      }
+    }
+
+    // Función para reproducir una canción desde favoritos
+    function playAudioFromFavorites(id) {
+      // Establecer la lista de reproducción actual solo con canciones favoritas
+      currentPlaylist = audioData.filter(song => favorites.includes(song.id));
+      const index = currentPlaylist.findIndex(song => song.id === id);
+      if (index !== -1) {
+        currentIndex = index;
+        loadTrack(currentIndex);
+        audioPlayer.play();
+        isPlaying = true;
+        document.getElementById('playPauseButton').textContent = '⏸';
+      }
+    }
+
+    // Función para pausar/reproducir
+    function togglePlay() {
+      if (isPlaying) {
+        audioPlayer.pause();
+      } else {
+        audioPlayer.play();
+      }
+    }
+
+    // Función para la siguiente canción
+    function nextTrack() {
+      if (currentPlaylist.length === 0) return;
+      
+      if (isShuffle) {
+        // Si está en modo aleatorio, seleccionar una canción aleatoria diferente a la actual
+        let newIndex;
+        do {
+          newIndex = Math.floor(Math.random() * currentPlaylist.length);
+        } while (newIndex === currentIndex && currentPlaylist.length > 1);
+        currentIndex = newIndex;
+      } else {
+        // Si no está en modo aleatorio, ir a la siguiente canción
+        currentIndex = (currentIndex + 1) % currentPlaylist.length;
+      }
+      
+      loadTrack(currentIndex);
+      if (isPlaying) audioPlayer.play();
+    }
+
+    // Función para la canción anterior
+    function prevTrack() {
+      if (audioPlayer.currentTime > 3) {
+        audioPlayer.currentTime = 0;
+      } else {
+        currentIndex = (currentIndex - 1 + currentPlaylist.length) % currentPlaylist.length;
+        loadTrack(currentIndex);
+        if (isPlaying) audioPlayer.play();
+      }
+    }
+
+    // Función para activar/desactivar el modo aleatorio
+    function toggleShuffle() {
+      isShuffle = !isShuffle;
+      const shuffleButton = document.querySelector('#controls button:nth-child(4)');
+      shuffleButton.style.backgroundColor = isShuffle ? '#ff5e01' : '#333';
+    }
+
+    // Función para cerrar el reproductor
+    function closePlayer() {
+      audioPlayer.pause();
+      document.getElementById('floatingPlayer').style.display = "none";
+      isPlaying = false;
+      document.getElementById('playPauseButton').textContent = '▶';
+      clearInterval(progressInterval);
+    }
+
+    // Función para minimizar/restaurar el reproductor
+    function toggleMinimize() {
+      document.getElementById('floatingPlayer').classList.toggle('minimized');
+    }
+
+    // Función para mostrar/ocultar la lista de reproducción
+    function togglePlaylist() {
+      if (playlistPanel.style.display === "block") {
+        playlistPanel.style.display = "none";
+      } else {
+        playlistPanel.style.display = "block";
+        renderPlaylist();
+      }
+    }
+
+    // Función para renderizar la lista de reproducción
+    function renderPlaylist() {
+      playlistItems.innerHTML = "";
+      currentPlaylist.forEach((song, index) => {
+        const playCount = playCounts[song.id] || 0;
+        const item = document.createElement("div");
+        item.className = `playlist-item ${index === currentIndex ? 'active' : ''}`;
+        item.onclick = () => {
+          currentIndex = index;
+          loadTrack(currentIndex);
+          audioPlayer.play();
+          isPlaying = true;
+          document.getElementById('playPauseButton').textContent = '⏸';
+          playlistPanel.style.display = "none";
+        };
+        
+        item.innerHTML = `
+          <img src="${song.cover}" alt="${song.title}">
+          <div class="playlist-item-info">
+            <div class="playlist-item-title">${song.title}</div>
+            <div class="playlist-item-artist">${song.artist}</div>
+          </div>
+          <div class="playlist-item-plays">${playCount} plays</div>
+        `;
+        playlistItems.appendChild(item);
+      });
+    }
+
+    // Función para actualizar el resaltado en la lista de reproducción
+    function updatePlaylistHighlight() {
+      const items = document.querySelectorAll('.playlist-item');
+      items.forEach((item, index) => {
+        if (index === currentIndex) {
+          item.classList.add('active');
+        } else {
+          item.classList.remove('active');
+        }
+      });
+    }
+
+    // Función para buscar en la lista de reproducción
+    function searchPlaylist() {
+      const searchTerm = document.getElementById('playlistSearchInput').value.toLowerCase();
+      const items = document.querySelectorAll('.playlist-item');
+
+      items.forEach(item => {
+        const title = item.querySelector('.playlist-item-title').textContent.toLowerCase();
+        const artist = item.querySelector('.playlist-item-artist').textContent.toLowerCase();
+        if (title.includes(searchTerm) || artist.includes(searchTerm)) {
+          item.style.display = 'flex';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    }
+
+    // Función para buscar canciones, artistas o álbumes
+    function searchSongs() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+      
+      // Si el campo de búsqueda está vacío, mostrar las categorías normales
+      if (searchTerm === '') {
+        categoriesContainer.style.display = 'block';
+        searchResultsContainer.style.display = 'none';
+        clearArtistFilter();
+        clearAlbumFilter();
+        return;
+      }
+      
+      // Ocultar categorías normales y mostrar contenedor de resultados
+      categoriesContainer.style.display = 'none';
+      searchResultsContainer.style.display = 'block';
+      
+      // Filtrar canciones que coincidan con el término de búsqueda
+      const results = audioData.filter(song => {
+        return (
+          song.title.toLowerCase().includes(searchTerm) ||
+          song.artist.toLowerCase().includes(searchTerm) ||
+          (song.album && song.album.toLowerCase().includes(searchTerm))
+        );
+      });
+      
+      // Mostrar resultados
+      displaySearchResults(results, searchTerm);
+      
+      // Verificar si el término de búsqueda coincide exactamente con un artista o álbum
+      const exactArtistMatch = audioData.find(song => song.artist.toLowerCase() === searchTerm);
+      const exactAlbumMatch = audioData.find(song => song.album && song.album.toLowerCase() === searchTerm);
+      
+      // Si hay una coincidencia exacta con un artista, mostrar el modal de confirmación
+      if (exactArtistMatch && exactArtistMatch.artist.toLowerCase() === searchTerm) {
+        showConfirmationModal('artist', exactArtistMatch.artist);
+      } 
+      // Si hay una coincidencia exacta con un álbum, mostrar el modal de confirmación
+      else if (exactAlbumMatch && exactAlbumMatch.album.toLowerCase() === searchTerm) {
+        showConfirmationModal('album', exactAlbumMatch.album);
+      }
+    }
+
+    // Función para mostrar el modal de confirmación
+    function showConfirmationModal(type, name) {
+      if (type === 'artist') {
+        confirmationTitle.textContent = '¿Deseas escuchar solo música de este artista?';
+        confirmationMessage.textContent = `Se reproducirán solo las canciones de ${name}`;
+      } else if (type === 'album') {
+        confirmationTitle.textContent = '¿Deseas escuchar solo música de este álbum?';
+        confirmationMessage.textContent = `Se reproducirán solo las canciones del álbum ${name}`;
+      }
+      
+      filterNameSpan.textContent = name;
+      pendingFilter = { type, name };
+      confirmationModal.style.display = 'flex';
+    }
+
+    // Función para manejar la respuesta del modal de confirmación
+    function confirmFilter(confirm) {
+      confirmationModal.style.display = 'none';
+      
+      if (confirm && pendingFilter) {
+        if (pendingFilter.type === 'artist') {
+          filterByArtist(pendingFilter.name);
+        } else if (pendingFilter.type === 'album') {
+          filterByAlbum(pendingFilter.name);
+        }
+      }
+      
+      pendingFilter = null;
+    }
+
+    // Función para filtrar por artista
+    function filterByArtist(artistName) {
+      currentArtistFilter = artistName;
+      currentAlbumFilter = null;
+      
+      // Mostrar el nombre del artista actual
+      currentArtistDisplay.textContent = `Mostrando: ${artistName}`;
+      currentArtistDisplay.style.display = 'block';
+      
+      // Actualizar los botones de filtro de artista
+      updateArtistFilterButtons();
+      
+      // Ocultar todas las categorías excepto "Toda la música"
+      document.querySelectorAll('.category').forEach(category => {
+        if (category.id !== 'mostPlayedCategory') {
+          category.style.display = 'none';
+        }
+      });
+      
+      // Filtrar las canciones en "Toda la música" para mostrar solo las del artista
+      const mostPlayedSongs = [...audioData]
+        .filter(song => song.artist.toLowerCase() === artistName.toLowerCase())
+        .sort(() => Math.random() - 0.5);
+      
+      renderSongsInCategory(mostPlayedContainer, mostPlayedSongs, "plays");
+    }
+
+    // Función para filtrar por álbum
+    function filterByAlbum(albumName) {
+      currentAlbumFilter = albumName;
+      currentArtistFilter = null;
+      
+      // Mostrar el nombre del álbum actual
+      currentArtistDisplay.textContent = `Mostrando: ${albumName}`;
+      currentArtistDisplay.style.display = 'block';
+      
+      // Ocultar todas las categorías excepto "Toda la música"
+      document.querySelectorAll('.category').forEach(category => {
+        if (category.id !== 'mostPlayedCategory') {
+          category.style.display = 'none';
+        }
+      });
+      
+      // Filtrar las canciones en "Toda la música" para mostrar solo las del álbum
+      const mostPlayedSongs = [...audioData]
+        .filter(song => song.album && song.album.toLowerCase() === albumName.toLowerCase())
+        .sort(() => Math.random() - 0.5);
+      
+      renderSongsInCategory(mostPlayedContainer, mostPlayedSongs, "plays");
+    }
+
+    // Función para limpiar el filtro de artista
+    function clearArtistFilter() {
+      currentArtistFilter = null;
+      currentArtistDisplay.style.display = 'none';
+      updateArtistFilterButtons();
+      updateCategoriesBasedOnPlays();
+    }
+
+    // Función para limpiar el filtro de álbum
+    function clearAlbumFilter() {
+      currentAlbumFilter = null;
+      currentArtistDisplay.style.display = 'none';
+      updateCategoriesBasedOnPlays();
+    }
+
+    // Función para actualizar los botones de filtro de artista
+    function updateArtistFilterButtons() {
+      const buttons = document.querySelectorAll('.artist-filter-btn');
+      buttons.forEach(button => {
+        if (button.textContent.toLowerCase() === (currentArtistFilter || '').toLowerCase()) {
+          button.classList.add('active');
+        } else {
+          button.classList.remove('active');
+        }
+      });
+    }
+
+    // Función para inicializar los botones de filtro de artista
+    function initializeArtistFilters() {
+      artistFilterContainer.innerHTML = '';
+      
+      // Obtener todos los artistas únicos
+      const allArtists = [...new Set(audioData.map(song => song.artist))];
+      
+      // Crear botón para limpiar filtros
+      const clearButton = document.createElement('button');
+      clearButton.className = `artist-filter-btn ${!currentArtistFilter ? 'active' : ''}`;
+      clearButton.textContent = 'Todos';
+      clearButton.onclick = () => clearArtistFilter();
+      artistFilterContainer.appendChild(clearButton);
+      
+      // Crear botones para cada artista
+      allArtists.forEach(artist => {
+        const button = document.createElement('button');
+        button.className = `artist-filter-btn ${currentArtistFilter === artist ? 'active' : ''}`;
+        button.textContent = artist;
+        button.onclick = () => filterByArtist(artist);
+        artistFilterContainer.appendChild(button);
+      });
+      
+      // Mostrar la barra de filtros
+      artistFilterContainer.style.display = 'flex';
+    }
+
+    // Función para agregar/eliminar favoritos
+    function toggleFavorite(id, event) {
+      // Detener la propagación del evento para evitar que se active el playAudio
+      if (event) event.stopPropagation();
+      
+      const index = favorites.indexOf(id);
+      if (index === -1) {
+        favorites.push(id);
+        favoriteCounts[id] = (favoriteCounts[id] || 0) + 1;
+      } else {
+        favorites.splice(index, 1);
+        favoriteCounts[id] = Math.max((favoriteCounts[id] || 1) - 1, 0);
+      }
+      localStorage.setItem('favorites', JSON.stringify(favorites));
+      localStorage.setItem('favoriteCounts', JSON.stringify(favoriteCounts));
+      updateFavoriteButtons();
+      renderFavorites();
+      updateFavoriteCount(id);
+    }
+
+    // Función para actualizar los botones de favoritos
+    function updateFavoriteButtons() {
+      const buttons = document.querySelectorAll('.favorite-btn');
+      buttons.forEach(button => {
+        const onclickAttr = button.getAttribute('onclick');
+        if (!onclickAttr) return;
+        
+        const id = onclickAttr.match(/'(.*?)'/)[1];
+        if (favorites.includes(id)) {
+          button.classList.add('added');
+          button.innerHTML = '❤️ En Favoritos';
+        } else {
+          button.classList.remove('added');
+          button.innerHTML = '❤️ Favorito';
+        }
+      });
+    }
+
+    // Función para actualizar el contador de favoritos
+    function updateFavoriteCount(id) {
+      const countElement = document.getElementById(`count-${id}`);
+      if (countElement) {
+        countElement.textContent = `${favoriteCounts[id] || 0} favoritos`;
+      }
+    }
+
+    // Función para mostrar/ocultar el panel de favoritos
+    function toggleFavoritesPanel() {
+      if (favoritesPanel.style.display === "block") {
+        favoritesPanel.style.display = "none";
+      } else {
+        favoritesPanel.style.display = "block";
+        renderFavorites();
+      }
+    }
+
+    // Función para renderizar los favoritos
+    function renderFavorites() {
+      favoritesItems.innerHTML = "";
+      if (favorites.length === 0) {
+        favoritesItems.innerHTML = '<p style="text-align: center; color: #aaa;">No tienes canciones favoritas aún</p>';
+        return;
+      }
+
+      const favoriteSongs = audioData.filter(song => favorites.includes(song.id));
+      favoriteSongs.forEach((song, index) => {
+        const playCount = playCounts[song.id] || 0;
+        const item = document.createElement("div");
+        item.className = `playlist-item ${song.id === currentPlaylist[currentIndex]?.id ? 'active' : ''}`;
+        item.onclick = () => {
+          // Cambiar la lista de reproducción actual solo a favoritos
+          currentPlaylist = favoriteSongs;
+          currentIndex = currentPlaylist.findIndex(s => s.id === song.id);
+          loadTrack(currentIndex);
+          audioPlayer.play();
+          isPlaying = true;
+          document.getElementById('playPauseButton').textContent = '⏸';
+          favoritesPanel.style.display = "none";
+        };
+        
+        item.innerHTML = `
+          <img src="${song.cover}" alt="${song.title}">
+          <div class="playlist-item-info">
+            <div class="playlist-item-title">${song.title}</div>
+            <div class="playlist-item-artist">${song.artist}</div>
+          </div>
+          <div class="playlist-item-plays">${playCount} plays</div>
+        `;
+        favoritesItems.appendChild(item);
+      });
+    }
+
+    // Función para buscar en favoritos
+    function searchFavorites() {
+      const searchTerm = document.getElementById('favoritesSearchInput').value.toLowerCase();
+      const items = document.querySelectorAll('#favoritesItems .playlist-item');
+
+      items.forEach(item => {
+        const title = item.querySelector('.playlist-item-title').textContent.toLowerCase();
+        const artist = item.querySelector('.playlist-item-artist').textContent.toLowerCase();
+        if (title.includes(searchTerm) || artist.includes(searchTerm)) {
+          item.style.display = 'flex';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    }
+
+    // Función para incrementar el contador de reproducciones
+    function incrementPlayCount(id) {
+      playCounts[id] = (playCounts[id] || 0) + 1;
+      localStorage.setItem('playCounts', JSON.stringify(playCounts));
+      
+      // Actualizar el registro de reproducciones recientes
+      const now = new Date();
+      recentPlays.push({ id, timestamp: now.getTime() });
+      // Mantener solo las últimas 100 reproducciones
+      if (recentPlays.length > 100) {
+        recentPlays.shift();
+      }
+      localStorage.setItem('recentPlays', JSON.stringify(recentPlays));
+      
+      // Actualizar las categorías basadas en reproducciones
+      updateCategoriesBasedOnPlays();
+    }
+
+    // Función para actualizar las categorías basadas en reproducciones
+    function updateCategoriesBasedOnPlays() {
+      // 1. Toda la música (orden aleatorio)
+      const shuffledSongs = [...audioData].sort(() => Math.random() - 0.5);
+      renderSongsInCategory(mostPlayedContainer, shuffledSongs, "plays");
+
+      // 2. Tendencias (basado en reproducciones recientes)
+      const trendingSongs = calculateTrendingSongs();
+      renderSongsInCategory(trendingContainer, trendingSongs, "trending");
+    }
+
+    // Función para calcular canciones en tendencia
+    function calculateTrendingSongs() {
+      // Agrupar reproducciones por canción en las últimas 24 horas
+      const twentyFourHoursAgo = new Date().getTime() - (24 * 60 * 60 * 1000);
+      const recentPlaysLast24h = recentPlays.filter(play => play.timestamp > twentyFourHoursAgo);
+      
+      const playCountsLast24h = {};
+      recentPlaysLast24h.forEach(play => {
+        playCountsLast24h[play.id] = (playCountsLast24h[play.id] || 0) + 1;
+      });
+      
+      // Ordenar por reproducciones en las últimas 24 horas
+      const trending = [...audioData].sort((a, b) => {
+        return (playCountsLast24h[b.id] || 0) - (playCountsLast24h[a.id] || 0);
+      }).slice(0, 8); // Tomar las 8 más escuchadas recientemente
+      
+      return trending;
+    }
+
+    // Función para renderizar canciones en una categoría
+    function renderSongsInCategory(container, songs, categoryType) {
+      // Limpiar el contenedor
+      container.innerHTML = "";
+      
+      // Añadir las canciones
+      songs.forEach(song => {
+        const isNew = song.releaseDate && new Date(song.releaseDate) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+        const playCount = playCounts[song.id] || 0;
+        const isFavorite = favorites.includes(song.id);
+        
+        const songItem = document.createElement("div");
+        songItem.className = "song-item";
+        songItem.innerHTML = `
+          <img src="${song.cover}" alt="${song.title}" onclick="playAudio('${song.id}')">
+          <div class="song-info">
+            ${isNew ? '<span class="Nuevo">NUEVO</span>' : ''}
+            <span class="song-title">${song.title}</span>
+            <span class="artist-name">${song.artist}</span>
+            ${song.album ? `<span class="album-name" style="display:block;color:#888;font-size:11px;">${song.album}</span>` : ''}
+            <button class="favorite-btn ${isFavorite ? 'added' : ''}" onclick="toggleFavorite('${song.id}', event)">
+              ${isFavorite ? '❤️ En Favoritos' : '❤️ Favorito'}
+            </button>
+            <span class="favorite-count" id="count-${song.id}">${favoriteCounts[song.id] || 0} favoritos</span>
+            <span class="play-count">${playCount} reproducciones</span>
+          </div>
+        `;
+        container.appendChild(songItem);
+      });
+    }
+
+    // Función para mostrar los resultados de búsqueda
+    function displaySearchResults(results, searchTerm) {
+      searchResultsGrid.innerHTML = '';
+      
+      if (results.length === 0) {
+        noResultsMessage.style.display = 'block';
+        searchResultsTitle.textContent = `No se encontraron resultados para "${searchTerm}"`;
+      } else {
+        noResultsMessage.style.display = 'none';
+        searchResultsTitle.textContent = `Resultados para "${searchTerm}"`;
+        
+        results.forEach(song => {
+          const isNew = song.releaseDate && new Date(song.releaseDate) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+          const playCount = playCounts[song.id] || 0;
+          const isFavorite = favorites.includes(song.id);
+          
+          const songItem = document.createElement("div");
+          songItem.className = "song-item";
+          songItem.innerHTML = `
+            <img src="${song.cover}" alt="${song.title}" onclick="playAudio('${song.id}')">
+            <div class="song-info">
+              ${isNew ? '<span class="Nuevo">NUEVO</span>' : ''}
+              <span class="song-title">${song.title}</span>
+              <span class="artist-name">${song.artist}</span>
+              ${song.album ? `<span class="album-name" style="display:block;color:#888;font-size:11px;">${song.album}</span>` : ''}
+              <button class="favorite-btn ${isFavorite ? 'added' : ''}" onclick="toggleFavorite('${song.id}', event)">
+                ${isFavorite ? '❤️ En Favoritos' : '❤️ Favorito'}
+              </button>
+              <span class="favorite-count" id="count-${song.id}">${favoriteCounts[song.id] || 0} favoritos</span>
+              <span class="play-count">${playCount} reproducciones</span>
+            </div>
+          `;
+          searchResultsGrid.appendChild(songItem);
+        });
+      }
+    }
+
+    // Inicialización
+    window.onload = function() {
+      // Inicializar contadores de reproducción si no existen
+      if (!localStorage.getItem('playCounts')) {
+        // Asignar algunas reproducciones iniciales para demostración
+        const initialPlayCounts = {};
+        audioData.forEach(song => {
+          initialPlayCounts[song.id] = Math.floor(Math.random() * 100);
+        });
+        localStorage.setItem('playCounts', JSON.stringify(initialPlayCounts));
+        playCounts = initialPlayCounts;
+      }
+
+      // Inicializar reproducciones recientes si no existen
+      if (!localStorage.getItem('recentPlays')) {
+        // Crear algunas reproducciones recientes para demostración
+        const initialRecentPlays = [];
+        const now = new Date().getTime();
+        audioData.forEach(song => {
+          const randomHoursAgo = Math.floor(Math.random() * 24);
+          initialRecentPlays.push({
+            id: song.id,
+            timestamp: now - (randomHoursAgo * 60 * 60 * 1000)
+          });
+        });
+        localStorage.setItem('recentPlays', JSON.stringify(initialRecentPlays));
+        recentPlays = initialRecentPlays;
+      }
+
+      // Inicializar favoritos si no existen
+      if (!localStorage.getItem('favorites')) {
+        localStorage.setItem('favorites', JSON.stringify([]));
+        favorites = [];
+      }
+
+      // Inicializar contadores de favoritos si no existen
+      if (!localStorage.getItem('favoriteCounts')) {
+        localStorage.setItem('favoriteCounts', JSON.stringify({}));
+        favoriteCounts = {};
+      }
+
+      // Inicializar los filtros de artista
+      initializeArtistFilters();
+
+      // Actualizar las categorías
+      updateCategoriesBasedOnPlays();
+
+      // Animar los elementos de la canción uno por uno
+      const songItems = document.querySelectorAll('.song-item');
+      songItems.forEach((item, index) => {
+        item.style.animationDelay = `${index * 0.1}s`;
+      });
+      
+      // Evento para cerrar la lista de reproducción
+      document.getElementById('closePlaylistButton').addEventListener('click', function() {
+        playlistPanel.style.display = 'none';
+      });
+      
+      // Evento para cerrar el modal de confirmación haciendo clic fuera
+      confirmationModal.addEventListener('click', function(e) {
+        if (e.target === confirmationModal) {
+          confirmationModal.style.display = 'none';
+          pendingFilter = null;
+        }
+      });
+    };
+  </script>
+</body>
+</html>
