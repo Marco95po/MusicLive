@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrega de Archivo WAV</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #121212 0%, #000000 100%);
+            color: #f1f1f1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .container {
+            background-color: #1a1a1a;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            padding: 40px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            border: 1px solid #333;
+        }
+        
+        .logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #4a6cf7;
+            box-shadow: 0 5px 15px rgba(74, 108, 247, 0.3);
+        }
+        
+        h1 {
+            margin-top: 0;
+            color: #ffffff;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .deadline {
+            background: linear-gradient(to right, #4a6cf7, #6a11cb);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 25px 0;
+            font-weight: 500;
+            box-shadow: 0 4px 10px rgba(106, 17, 203, 0.2);
+        }
+        
+        .deadline span {
+            font-weight: 700;
+            color: #fff;
+        }
+        
+        p {
+            color: #ccc;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            margin: 10px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 16px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .download-btn {
+            background: linear-gradient(to right, #25aae1, #4481eb);
+            color: white;
+        }
+        
+        .download-btn:hover {
+            background: linear-gradient(to right, #4481eb, #25aae1);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(68, 129, 235, 0.3);
+        }
+        
+        .submit-btn {
+            background: #1a1a1a;
+            color: #4a6cf7;
+            border: 2px solid #4a6cf7;
+        }
+        
+        .submit-btn:hover {
+            background: #4a6cf7;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(74, 108, 247, 0.3);
+        }
+        
+        .info {
+            margin-top: 30px;
+            font-size: 14px;
+            color: #999;
+            padding-top: 15px;
+            border-top: 1px solid #333;
+        }
+        
+        .email {
+            font-weight: 600;
+            color: #4a6cf7;
+        }
+        
+        /* Estilos para el reproductor de audio */
+        .audio-player {
+            margin: 25px 0;
+        }
+        
+        .audio-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #ffffff;
+        }
+        
+        .play-btn {
+            background: linear-gradient(to right, #4CAF50, #8BC34A);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border: none;
+            font-size: 24px;
+            transition: all 0.3s ease;
+        }
+        
+        .play-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(76, 175, 80, 0.3);
+        }
+        
+        .play-btn i {
+            margin-left: 3px; /* Ajuste para centrar el icono de play */
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <img src="https://i.postimg.cc/mDWDXxwx/FB-IMG-1748821802278.jpg" alt="Icono de música" class="logo">
+        
+        <h1>Entrega de Archivo WAV</h1>
+        
+        <div class="deadline">
+            Fecha límite de entrega: <span>22 de junio</span>
+        </div>
+        
+        <p>Por favor, envía tu archivo en formato WAV antes de la fecha límite.</p>
+        
+        <!-- Reproductor de audio con título -->
+        <div class="audio-player">
+            <div class="audio-title">Beats J-Vazquez ft Out Mx</div>
+            <button class="play-btn" id="playButton">
+                <i class="fas fa-play"></i>
+            </button>
+            <audio id="audioPlayer" src="https://www.dropbox.com/scl/fi/t88zb5a03ohd1l1ksdtpa/Beats-J-Vazquez-ft-Out-Mx.wav?rlkey=0no5q8n9655nrbvwc6haf7idw&dl=1"></audio>
+        </div>
+        
+        <a href="https://www.dropbox.com/scl/fi/t88zb5a03ohd1l1ksdtpa/Beats-J-Vazquez-ft-Out-Mx.wav?rlkey=0no5q8n9655nrbvwc6haf7idw&dl=1" class="btn download-btn" download>
+            Descargar Archivo
+        </a>
+        
+        <button class="btn submit-btn" onclick="sendEmail()">
+            Enviar por Correo
+        </button>
+        
+        <div class="info">
+            El archivo será enviado a: <span class="email">kerimmusic2024@gmail.com</span>
+        </div>
+    </div>
+    
+    <script>
+        function sendEmail() {
+            const email = "kerimmusic2024@gmail.com";
+            const subject = "Entrega de archivo WAV";
+            const body = "Adjunto mi archivo WAV para la entrega del 22 de junio.";
+            
+            window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        }
+        
+        // Control del reproductor de audio
+        const playButton = document.getElementById('playButton');
+        const audioPlayer = document.getElementById('audioPlayer');
+        const playIcon = playButton.querySelector('i');
+        
+        playButton.addEventListener('click', function() {
+            if (audioPlayer.paused) {
+                audioPlayer.play();
+                playIcon.classList.remove('fa-play');
+                playIcon.classList.add('fa-pause');
+            } else {
+                audioPlayer.pause();
+                playIcon.classList.remove('fa-pause');
+                playIcon.classList.add('fa-play');
+            }
+        });
+        
+        // Cuando el audio termina, volver a mostrar el icono de play
+        audioPlayer.addEventListener('ended', function() {
+            playIcon.classList.remove('fa-pause');
+            playIcon.classList.add('fa-play');
+        });
+    </script>
+</body>
+</html>
