@@ -3,223 +3,442 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Entrega de Archivo WAV</title>
+    <title>Descarga Music Live - La mejor app de música en vivo</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        :root {
+            --primary: #FF6B00;
+            --secondary: #000000;
+            --accent: #FF8C42;
+            --text-light: #F8F8F8;
+            --text-dark: #333333;
+        }
+        
+        * {
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, #121212 0%, #000000 100%);
-            color: #f1f1f1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+        
+        body {
+            background-color: var(--secondary);
+            color: var(--text-light);
+            overflow-x: hidden;
         }
         
         .container {
-            background-color: #1a1a1a;
-            border-radius: 15px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-            padding: 40px;
-            width: 90%;
-            max-width: 500px;
-            text-align: center;
-            border: 1px solid #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--secondary) 0%, #1a1a1a 100%);
+            padding: 30px 0;
+            box-shadow: 0 4px 30px rgba(255, 107, 0, 0.2);
         }
         
         .logo {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 20px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 4px solid #4a6cf7;
-            box-shadow: 0 5px 15px rgba(74, 108, 247, 0.3);
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
+        }
+        
+        .logo span {
+            font-weight: 300;
+        }
+        
+        .hero {
+            display: flex;
+            align-items: center;
+            min-height: 80vh;
+            padding: 60px 0;
+            position: relative;
+        }
+        
+        .hero-content {
+            flex: 1;
+            z-index: 2;
+        }
+        
+        .hero-image {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+        }
+        
+        .hero-image img {
+            max-width: 50%;
+            height: auto;
+            filter: drop-shadow(0 20px 30px rgba(255, 107, 0, 0.3));
+            animation: float 6s ease-in-out infinite;
         }
         
         h1 {
-            margin-top: 0;
-            color: #ffffff;
-            font-weight: 700;
+            font-size: 3.5rem;
             margin-bottom: 20px;
+            line-height: 1.2;
         }
         
-        .deadline {
-            background: linear-gradient(to right, #4a6cf7, #6a11cb);
-            color: white;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 25px 0;
-            font-weight: 500;
-            box-shadow: 0 4px 10px rgba(106, 17, 203, 0.2);
-        }
-        
-        .deadline span {
-            font-weight: 700;
-            color: #fff;
+        h1 span {
+            color: var(--primary);
         }
         
         p {
-            color: #ccc;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            opacity: 0.9;
+            max-width: 600px;
         }
         
         .btn {
             display: inline-block;
-            padding: 12px 30px;
-            margin: 10px;
-            border-radius: 50px;
+            padding: 15px 30px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            color: white;
             text-decoration: none;
+            border-radius: 50px;
             font-weight: 600;
+            font-size: 1.1rem;
             transition: all 0.3s ease;
-            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(255, 107, 0, 0.3);
             border: none;
-            font-size: 16px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            margin-right: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(255, 107, 0, 0.4);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            box-shadow: none;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 107, 0, 0.1);
+        }
+        
+        .features {
+            padding: 100px 0;
+            background-color: #111;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 50px;
+        }
+        
+        .feature-card {
+            background: linear-gradient(145deg, #1a1a1a, #222);
+            padding: 40px 30px;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--primary);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(255, 107, 0, 0.2);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .download-section {
+            text-align: center;
+            padding: 100px 0;
+            background: linear-gradient(135deg, var(--secondary) 0%, #1a1a1a 100%);
+        }
+        
+        .download-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 40px;
         }
         
         .download-btn {
-            background: linear-gradient(to right, #25aae1, #4481eb);
+            display: flex;
+            align-items: center;
+            background: #111;
+            padding: 15px 30px;
+            border-radius: 10px;
+            text-decoration: none;
             color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
         
         .download-btn:hover {
-            background: linear-gradient(to right, #4481eb, #25aae1);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(68, 129, 235, 0.3);
-        }
-        
-        .submit-btn {
+            transform: translateY(-5px);
             background: #1a1a1a;
-            color: #4a6cf7;
-            border: 2px solid #4a6cf7;
+            box-shadow: 0 10px 25px rgba(255, 107, 0, 0.3);
         }
         
-        .submit-btn:hover {
-            background: #4a6cf7;
-            color: white;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(74, 108, 247, 0.3);
+        .download-btn i {
+            font-size: 2rem;
+            margin-right: 15px;
+            color: var(--primary);
         }
         
-        .info {
-            margin-top: 30px;
-            font-size: 14px;
-            color: #999;
-            padding-top: 15px;
-            border-top: 1px solid #333;
+        .download-text {
+            text-align: left;
         }
         
-        .email {
-            font-weight: 600;
-            color: #4a6cf7;
+        .download-text span {
+            display: block;
+            font-size: 0.8rem;
+            opacity: 0.7;
         }
         
-        /* Estilos para el reproductor de audio */
-        .audio-player {
-            margin: 25px 0;
+        .download-text strong {
+            font-size: 1.2rem;
         }
         
-        .audio-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            color: #ffffff;
+        footer {
+            background-color: #000;
+            padding: 50px 0 20px;
+            text-align: center;
         }
         
-        .play-btn {
-            background: linear-gradient(to right, #4CAF50, #8BC34A);
-            color: white;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
+        .footer-links {
             display: flex;
             justify-content: center;
-            align-items: center;
-            margin: 0 auto;
-            cursor: pointer;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            border: none;
-            font-size: 24px;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            opacity: 0.7;
             transition: all 0.3s ease;
         }
         
-        .play-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 12px rgba(76, 175, 80, 0.3);
+        .footer-links a:hover {
+            opacity: 1;
+            color: var(--primary);
         }
         
-        .play-btn i {
-            margin-left: 3px; /* Ajuste para centrar el icono de play */
+        .copyright {
+            opacity: 0.5;
+            font-size: 0.9rem;
+            margin-top: 30px;
+        }
+        
+        .bg-orange-blob {
+            position: absolute;
+            top: -200px;
+            right: -200px;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255, 107, 0, 0.2) 0%, rgba(255, 107, 0, 0) 70%);
+            border-radius: 50%;
+            z-index: 0;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+            100% {
+                transform: translateY(0px);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+                padding: 40px 0;
+            }
+            
+            .hero-content {
+                margin-bottom: 50px;
+            }
+            
+            p {
+                margin-left: auto;
+                margin-right: auto;
+            }
+            
+            .btn {
+                display: block;
+                margin: 0 auto 15px;
+                width: 80%;
+                max-width: 300px;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
         }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <img src="https://i.postimg.cc/mDWDXxwx/FB-IMG-1748821802278.jpg" alt="Icono de música" class="logo">
-        
-        <h1>Entrega de Archivo WAV</h1>
-        
-        <div class="deadline">
-            Fecha límite de entrega: <span>22 de junio</span>
+    <header>
+        <div class="container">
+            <div class="logo">MUSIC<span>Live</span></div>
         </div>
-        
-        <p>Por favor, envía tu archivo en formato WAV antes de la fecha límite.</p>
-        
-        <!-- Reproductor de audio con título -->
-        <div class="audio-player">
-            <div class="audio-title">Beats J-Vazquez ft Out Mx</div>
-            <button class="play-btn" id="playButton">
-                <i class="fas fa-play"></i>
-            </button>
-            <audio id="audioPlayer" src="https://www.dropbox.com/scl/fi/t88zb5a03ohd1l1ksdtpa/Beats-J-Vazquez-ft-Out-Mx.wav?rlkey=0no5q8n9655nrbvwc6haf7idw&dl=1"></audio>
-        </div>
-        
-        <a href="https://download1500.mediafire.com/uz19u69b9idgk1AjRvuYT2yepmpm35-6icUXJiJTj8IVfgSybgGP3spDLYRfjBgFAkaDe4_BOW8ysBVefIplTtBjjEx9iaZWWx47QcjPtwMpaIIlhudpD8L9-t6ZRP4btDv6LTj6hLhB46Rhwt6dmiueH0nJlyqToRTyE31kwlZOhNo/h9g5bbjc01zsg8p/Beats+J+Vazquez+ft+Out+Mx.wav" class="btn download-btn" download>
-            Descargar Archivo
-        </a>
-        
-        <button class="btn submit-btn" onclick="sendEmail()">
-            Enviar por Correo
-        </button>
-        
-        <div class="info">
-            El archivo será enviado a: <span class="email">kerimmusic2024@gmail.com</span>
-        </div>
-    </div>
+    </header>
     
-    <script>
-        function sendEmail() {
-            const email = "kerimmusic2024@gmail.com";
-            const subject = "Entrega de archivo WAV";
-            const body = "Adjunto mi archivo WAV para la entrega del 22 de junio.";
+    <section class="hero">
+        <div class="bg-orange-blob"></div>
+        <div class="container">
+            <div class="hero-content">
+                <h1>Vive la música como nunca con <span>Music Live</span></h1>
+                <p>La aplicación revolucionaria que te conecta con artistas en vivo, eventos exclusivos y experiencias musicales únicas. Descárgala ahora y lleva la música contigo.</p>
+                <a href="https://apk.e-droid.net/apk/app3346530-epq9vc.apk?v=16" class="btn">Descargar Ahora</a>
+                <a href="#features" class="btn btn-secondary">Más Información</a>
+            </div>
+            <div class="hero-image">
+                <img src="https://i.postimg.cc/4yd7RtGh/Screenshot-20250606-180521.jpg" alt="Music Live App Preview">
+            </div>
+        </div>
+    </section>
+    
+    <section class="features" id="features">
+        <div class="container">
+            <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 20px;">Características <span style="color: var(--primary);">Exclusivas</span></h2>
+            <p style="text-align: center; max-width: 700px; margin: 0 auto 50px;">Music Live ofrece una experiencia musical sin igual con estas increíbles características</p>
             
-            window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-        }
-        
-        // Control del reproductor de audio
-        const playButton = document.getElementById('playButton');
-        const audioPlayer = document.getElementById('audioPlayer');
-        const playIcon = playButton.querySelector('i');
-        
-        playButton.addEventListener('click', function() {
-            if (audioPlayer.paused) {
-                audioPlayer.play();
-                playIcon.classList.remove('fa-play');
-                playIcon.classList.add('fa-pause');
-            } else {
-                audioPlayer.pause();
-                playIcon.classList.remove('fa-pause');
-                playIcon.classList.add('fa-play');
-            }
-        });
-        
-        // Cuando el audio termina, volver a mostrar el icono de play
-        audioPlayer.addEventListener('ended', function() {
-            playIcon.classList.remove('fa-pause');
-            playIcon.classList.add('fa-play');
-        });
-    </script>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-broadcast-tower"></i>
+                    </div>
+                    <h3>Streaming en Vivo</h3>
+                    <p>Disfruta de conciertos en vivo desde cualquier lugar del mundo con calidad HD y audio inmersivo.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-headphones"></i>
+                    </div>
+                    <h3>Audio 3D</h3>
+                    <p>Experiencia de sonido espacial que te hace sentir como si estuvieras en primera fila.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-calendar-star"></i>
+                    </div>
+                    <h3>Eventos Exclusivos</h3>
+                    <p>Acceso a shows privados, meet & greet con artistas y contenido exclusivo.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Comunidad Global</h3>
+                    <p>Conéctate con otros fans, comparte momentos y descubre nueva música juntos.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-magic"></i>
+                    </div>
+                    <h3>Personalización</h3>
+                    <p>Recomendaciones inteligentes basadas en tus gustos y hábitos de escucha.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <h3>Descargas Offline</h3>
+                    <p>Guarda tus conciertos favoritos y escúchalos cuando no tengas conexión.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="download-section" id="download">
+        <div class="container">
+            <h2 style="font-size: 2.5rem; margin-bottom: 20px;">Descarga <span style="color: var(--primary);">Music Live</span> Ahora</h2>
+            <p style="max-width: 700px; margin: 0 auto 30px;">Disponible para todas las plataformas. Únete a millones de usuarios que ya están disfrutando de la mejor experiencia musical.</p>
+            
+            <div class="download-buttons">
+                <a href="#" class="download-btn">
+                    <i class="fab fa-apple"></i>
+                    <div class="download-text">
+                        <span>Descargar en</span>
+                        <strong>App Store</strong>
+                    </div>
+                </a>
+                
+                <a href="#" class="download-btn">
+                    <i class="fab fa-google-play"></i>
+                    <div class="download-text">
+                        <span>Disponible en</span>
+                        <strong>Google Play</strong>
+                    </div>
+                </a>
+                
+                <a href="#" class="download-btn">
+                    <i class="fas fa-desktop"></i>
+                    <div class="download-text">
+                        <span>Versión para</span>
+                        <strong>Escritorio</strong>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="#">Términos de Servicio</a>
+                <a href="#">Política de Privacidad</a>
+                <a href="#">Soporte</a>
+                <a href="#">Artistas</a>
+                <a href="#">Eventos</a>
+                <a href="#">Contacto</a>
+            </div>
+            
+            <div class="social-links" style="margin-bottom: 30px;">
+                <a href="#" style="color: var(--primary); margin: 0 10px; font-size: 1.5rem;"><i class="fab fa-instagram"></i></a>
+                <a href="#" style="color: var(--primary); margin: 0 10px; font-size: 1.5rem;"><i class="fab fa-twitter"></i></a>
+                <a href="#" style="color: var(--primary); margin: 0 10px; font-size: 1.5rem;"><i class="fab fa-facebook"></i></a>
+                <a href="#" style="color: var(--primary); margin: 0 10px; font-size: 1.5rem;"><i class="fab fa-tiktok"></i></a>
+            </div>
+            
+            <div class="copyright">
+                &copy; 2023 Music Live. Todos los derechos reservados.
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
