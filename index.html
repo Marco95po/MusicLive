@@ -333,6 +333,70 @@
             margin-right: 15px;
         }
         
+        /* Notificaciones para móvil */
+        .mobile-notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 400px;
+            background: linear-gradient(135deg, #1a1a1a, #222);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            border-left: 5px solid var(--primary);
+            display: flex;
+            align-items: center;
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-notification.active {
+            opacity: 1;
+            visibility: visible;
+            bottom: 30px;
+        }
+        
+        .notification-icon {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-right: 15px;
+        }
+        
+        .notification-content {
+            flex: 1;
+        }
+        
+        .notification-content h4 {
+            margin-bottom: 5px;
+            font-size: 1rem;
+        }
+        
+        .notification-content p {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            margin-bottom: 0;
+        }
+        
+        .close-notification {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+            margin-left: 10px;
+        }
+        
+        .close-notification:hover {
+            opacity: 1;
+        }
+        
         @keyframes float {
             0% {
                 transform: translateY(0px);
@@ -379,6 +443,28 @@
             .modal-content h2 {
                 font-size: 1.5rem;
             }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .mobile-notification {
+                width: 95%;
+                padding: 12px;
+            }
+            
+            .notification-icon {
+                font-size: 1.2rem;
+                margin-right: 10px;
+            }
+            
+            .notification-content h4 {
+                font-size: 0.9rem;
+            }
+            
+            .notification-content p {
+                font-size: 0.7rem;
+            }
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -395,6 +481,16 @@
             <p>Puedes instalarla con total confianza y disfrutar de todas sus funciones sin preocupaciones.</p>
             <button class="btn" id="closeModalBtn">OK, Entendido</button>
         </div>
+    </div>
+    
+    <!-- Notificación para móvil -->
+    <div class="mobile-notification" id="mobileNotification">
+        <i class="fas fa-music notification-icon"></i>
+        <div class="notification-content">
+            <h4>¡Nueva actualización disponible!</h4>
+            <p>Descarga la última versión de Music Live con mejoras de rendimiento.</p>
+        </div>
+        <button class="close-notification" id="closeNotificationBtn">&times;</button>
     </div>
     
     <header>
@@ -537,6 +633,8 @@
         document.addEventListener('DOMContentLoaded', function() {
             const securityModal = document.getElementById('securityModal');
             const closeModalBtn = document.getElementById('closeModalBtn');
+            const mobileNotification = document.getElementById('mobileNotification');
+            const closeNotificationBtn = document.getElementById('closeNotificationBtn');
             
             // Mostrar el modal al cargar la página
             setTimeout(() => {
@@ -560,6 +658,41 @@
                     }, 300);
                 }
             });
+            
+            // Mostrar notificación para móvil después de cerrar el modal de seguridad
+            closeModalBtn.addEventListener('click', function() {
+                setTimeout(() => {
+                    // Verificar si es un dispositivo móvil
+                    if (/Mobi|Android/i.test(navigator.userAgent)) {
+                        setTimeout(() => {
+                            mobileNotification.classList.add('active');
+                        }, 1000);
+                    }
+                }, 300);
+            });
+            
+            // Cerrar notificación móvil
+            closeNotificationBtn.addEventListener('click', function() {
+                mobileNotification.classList.remove('active');
+            });
+            
+            // Mostrar notificación si el usuario baja hasta cierta parte de la página
+            window.addEventListener('scroll', function() {
+                if (/Mobi|Android/i.test(navigator.userAgent)) {
+                    if (window.scrollY > 500 && !mobileNotification.classList.contains('active')) {
+                        mobileNotification.classList.add('active');
+                    }
+                }
+            });
+            
+            // Mostrar notificación después de 10 segundos si no se ha mostrado antes
+            setTimeout(() => {
+                if (/Mobi|Android/i.test(navigator.userAgent)) {
+                    if (!mobileNotification.classList.contains('active')) {
+                        mobileNotification.classList.add('active');
+                    }
+                }
+            }, 10000);
         });
     </script>
 </body>
